@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,18 +7,16 @@
 UINTERFACE(MinimalAPI)
 class UNXItemInterface : public UInterface
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 };
-
 
 class NXPROJECT_API INXItemInterface
 {
-	GENERATED_BODY()
-
+    GENERATED_BODY()
 
 public:
-	virtual void OnItemOverlap(AActor* OverlapActor) = 0;
-	virtual void OnItemEndOverlap(AActor* OverlapActor) = 0;
-	virtual void ActivateItem(AActor* Avtivator) = 0;
-	virtual FName GetItemType() const = 0;
+    virtual void OnItemOverlap(AActor* OverlappedActor, AActor* OtherActor) = 0;
+    virtual void OnItemEndOverlap(AActor* OverlappedActor) = 0;
+    virtual void ActivateItem(AActor* Activator) = 0;
+    virtual FName GetItemType() const = 0;
 };

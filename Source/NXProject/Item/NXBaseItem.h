@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -6,28 +5,29 @@
 #include "NXItemInterface.h"
 #include "NXBaseItem.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class NXPROJECT_API ANXBaseItem : public AActor, public INXItemInterface
 {
-	GENERATED_BODY()
-	
-public:	
+    GENERATED_BODY()
 
-	ANXBaseItem();
+public:
+    ANXBaseItem();
+
+    virtual void OnItemOverlap(AActor* OverlappedActor, AActor* OtherActor) override;
+    virtual void OnItemEndOverlap(AActor* OverlappedActor) override;
+    virtual void ActivateItem(AActor* Activator) override;
+    virtual FName GetItemType() const override;
+
+    UFUNCTION()
+    virtual void DestroyItem();
 
 protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+    FName ItemType;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Item")
+    UFUNCTION()
+    virtual void HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
-	FName ItemType;
-
-	virtual void OnItemOverlap(AActor* OverlapActor) override;
-	virtual void OnItemEndOverlap(AActor* OverlapActor) override;
-	virtual void ActivateItem(AActor* Activator) override;
-	virtual FName GetItemType() const override;
-
-	virtual void DestroyItem();
-
-
-
+    UFUNCTION()
+    virtual void HandleEndOverlap(AActor* OverlappedActor);
 };
