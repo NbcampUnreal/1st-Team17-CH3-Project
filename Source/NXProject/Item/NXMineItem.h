@@ -12,6 +12,9 @@ class NXPROJECT_API ANXMineItem : public ANXBaseItem
 public:
     ANXMineItem();
 
+    UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Item|Component")
+    USphereComponent* ExplosionCollision;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mine")
     float ExplosionDelay;
 
@@ -21,5 +24,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mine")
     float ExplosionDamage;
 
+    FTimerHandle ExplosionTimerHandle;
+
     virtual void ActivateItem(AActor* Activator) override;
+
+    void Explode();
 };
