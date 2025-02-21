@@ -2,10 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "NXItemInterface.h"
+#include "NXItemInterface.h"  
 #include "NXBaseItem.generated.h"
 
-UCLASS(Abstract)
+class USphereComponent;
+class UStaticMeshComponent;
+class USceneComponent;
+
+UCLASS()
 class NXPROJECT_API ANXBaseItem : public AActor, public INXItemInterface
 {
     GENERATED_BODY()
@@ -13,21 +17,45 @@ class NXPROJECT_API ANXBaseItem : public AActor, public INXItemInterface
 public:
     ANXBaseItem();
 
-    virtual void OnItemOverlap(AActor* OverlappedActor, AActor* OtherActor) override;
-    virtual void OnItemEndOverlap(AActor* OverlappedActor) override;
-    virtual void ActivateItem(AActor* Activator) override;
-    virtual FName GetItemType() const override;
-
-    UFUNCTION()
-    virtual void DestroyItem();
-
 protected:
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
     FName ItemType;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
+    USceneComponent* Scene;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
+    USphereComponent* Collision;
+
+ 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
+    UStaticMeshComponent* StaticMesh;
+
+   
     UFUNCTION()
-    virtual void HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+    virtual void OnItemOverlap(
+        UPrimitiveComponent* OverlappedComp,
+        AActor* OtherActor,
+        UPrimitiveComponent* OtherComp,
+        int32 OtherBodyIndex,
+        bool bFromSweep,
+        const FHitResult& SweepResult
+    ) override;
 
     UFUNCTION()
-    virtual void HandleEndOverlap(AActor* OverlappedActor);
+    virtual void OnItemEndOverlap(
+        UPrimitiveComponent* OverlappedComp,
+        AActor* OtherActor,
+        UPrimitiveComponent* OtherComp,
+        int32 OtherBodyIndex
+    ) override;
+
+    UFUNCTION()
+    virtual void ActivateItem(AActor* Activator) override;
+
+    virtual FName GetItemType() const override;
+
+    UFUNCTION()
+    void DestroyItem();
 };

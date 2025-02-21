@@ -1,41 +1,64 @@
 #include "NXBaseItem.h"
+#include "Components/SphereComponent.h"
 
 ANXBaseItem::ANXBaseItem()
 {
-    PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = false;
+
+    Scene = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
+    SetRootComponent(Scene);
+
+
+    Collision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
+
+    Collision->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+
+    Collision->SetupAttachment(Scene);
+
+    StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+    StaticMesh->SetupAttachment(Collision);
+
+    Collision->OnComponentBeginOverlap.AddDynamic(this, &ANXBaseItem::OnItemOverlap);
+    Collision->OnComponentEndOverlap.AddDynamic(this, &ANXBaseItem::OnItemEndOverlap);
+
 }
 
-void ANXBaseItem::HandleBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+void ANXBaseItem::OnItemOverlap(
+	UPrimitiveComponent* OverlappedComp,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult)
 {
-    // 필요에 따라 기능 구현 추가
+	
+	if (OtherActor && OtherActor->ActorHasTag("Player"))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Overlap!!!")));
+		
+		ActivateItem(OtherActor);
+	}
 }
 
-void ANXBaseItem::HandleEndOverlap(AActor* OverlappedActor)
+void ANXBaseItem::OnItemEndOverlap(
+	UPrimitiveComponent* OverlappedComp,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex)
 {
-   
-}
-
-void ANXBaseItem::OnItemOverlap(AActor* OverlappedActor, AActor* OtherActor)
-{
- 
-}
-
-void ANXBaseItem::OnItemEndOverlap(AActor* OverlappedActor)
-{
-   
 }
 
 void ANXBaseItem::ActivateItem(AActor* Activator)
 {
-    
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Overlap!!")));
 }
 
 FName ANXBaseItem::GetItemType() const
 {
-    return ItemType;
+	return ItemType;
 }
 
 void ANXBaseItem::DestroyItem()
 {
-    Destroy();
+	Destroy();
 }
