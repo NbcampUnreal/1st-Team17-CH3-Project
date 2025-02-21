@@ -8,5 +8,5 @@ ANXSmallHealItem::ANXSmallHealItem()
 
 void ANXSmallHealItem::ActivateItem(AActor* Activator)
 {
-    DestroyItem();
+    Super::ActivateItem(Activator);
 }
