@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,11 +5,50 @@
 #include "NXAIController.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class NXPROJECT_API ANXAIController : public AAIController
 {
 	GENERATED_BODY()
-	
+
+	friend class ANXNonPlayerCharacter;		// 죽음 처리
+
+public:
+
+	ANXAIController();
+
+protected:
+
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+
+	//--------BB_NPC와 BT_NPC 애셋을 AIController 클래스에 연결---------//
+
+	void BeginAI(APawn* InPawn);
+	void EndAI();
+
+public:
+
+	static const float PatrolRadius;
+	static int32 ShowAIDebug;
+
+private:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (AllowPrivateAccess))
+	TObjectPtr<UBlackboardData> BlackboardDataAsset;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (AllowPrivateAccess))
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	//-----------AIController 클래스에서 블랙보드 값 수정---------------//
+
+public:
+
+	static const FName StartPatrolPositionKey;
+	static const FName EndPatrolPositionKey;
+	static const FName TargetCharacterKey;
+
 };
+
