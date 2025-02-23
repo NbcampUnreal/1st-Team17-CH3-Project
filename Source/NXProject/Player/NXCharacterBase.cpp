@@ -26,10 +26,9 @@ ANXCharacterBase::ANXCharacterBase()
     SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
 
     GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
-
     bIsSitting = false;
-    StandingHeight = 180.f;
-    SittingHeight = 90.f;
+
+  
 }
 
 
@@ -104,28 +103,12 @@ void ANXCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
                         &ANXCharacterBase::StopSprint
                     );
                 }
-                if (PlayerController->SitAction)
-                {
-
-                    EnhancedInput->BindAction(
-                        PlayerController->SprintAction,
-                        ETriggerEvent::Triggered,
-                        this,
-                        &ANXCharacterBase::StartSit
-                    );
-
-                    EnhancedInput->BindAction(
-                        PlayerController->SprintAction,
-                        ETriggerEvent::Completed,
-                        this,
-                        &ANXCharacterBase::StopSit
-                    );
-                }
-             
+                
 		}
 	}
 
 }
+
 
 
 
@@ -187,42 +170,6 @@ void ANXCharacterBase::StopSprint(const FInputActionValue& value)
     }
 }
 
-void ANXCharacterBase::UpdateMovementSpeed()
-{
-    if (bIsSitting)
-    {
-        // 앉을 때 이동 속도 감소
-        GetCharacterMovement()->MaxWalkSpeed = 300.f;
-    }
-    else
-    {
-        // 일어날 때 이동 속도 복구
-        GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
-    }
-}
 
-void ANXCharacterBase::StartSit(const FInputActionValue& value)
-{
-    if (!bIsSitting)
-    {
-        bIsSitting = true;
 
-        GetCapsuleComponent()->SetCapsuleHalfHeight(SittingHeight);
-
-        UpdateMovementSpeed();
-
-    }
-}
-
-void ANXCharacterBase::StopSit(const FInputActionValue& value)
-{
-    if (bIsSitting)
-    {
-        bIsSitting = false;
-
-        GetCapsuleComponent()->SetCapsuleHalfHeight(StandingHeight);
-
-        UpdateMovementSpeed();
-    }
-}
 

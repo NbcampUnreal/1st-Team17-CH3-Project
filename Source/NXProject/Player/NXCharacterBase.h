@@ -16,36 +16,33 @@ class NXPROJECT_API ANXCharacterBase : public ACharacter
 public:
 	
 	ANXCharacterBase();
+	
 
 protected:
-	
+
 	virtual void BeginPlay() override;
 
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	//카메라
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category= "Camera")
 	USpringArmComponent* SpringArmComp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* CameraComp;
 	
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+    
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category= "Movement")
 	float NormalSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float SprintSpeedMultiplier;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float SprintSpeed;
-
-
-	//앉기 구현
+	
+	
 	bool bIsSitting;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float StandingHeight;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float SittingHeight;
 
-	UFUNCTION()
-	void UpdateMovementSpeed();
-
+	
+	
 	UFUNCTION()
 	void Move(const FInputActionValue& value);
 	UFUNCTION()
@@ -58,10 +55,8 @@ protected:
 	void StartSprint(const FInputActionValue& value);
 	UFUNCTION()
 	void StopSprint(const FInputActionValue& value);
-	UFUNCTION()
-	void StartSit(const FInputActionValue& value);
-	UFUNCTION()
-	void StopSit(const FInputActionValue& value);
+	
+	
 
 
 };
