@@ -17,6 +17,8 @@ public:
 	
 	ANXCharacterBase();
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
+	bool bHasKey;
 
 protected:
 
@@ -55,8 +57,8 @@ protected:
 	void StartSprint(const FInputActionValue& value);
 	UFUNCTION()
 	void StopSprint(const FInputActionValue& value);
+	UFUNCTION()
+	void Interact(const FInputActionValue& value);
 	
-	
-
 
 };

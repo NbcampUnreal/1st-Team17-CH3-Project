@@ -4,7 +4,10 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Item/NXDoor.h"
+#include "Engine/Engine.h"
 #include "Camera/CameraComponent.h"
+
 
 // Sets default values
 ANXCharacterBase::ANXCharacterBase()
@@ -28,7 +31,9 @@ ANXCharacterBase::ANXCharacterBase()
     GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
     bIsSitting = false;
 
-  
+    bHasKey = false;
+
+    Tags.Add(FName("Player"));
 }
 
 
@@ -103,8 +108,17 @@ void ANXCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
                         &ANXCharacterBase::StopSprint
                     );
                 }
-                
-		}
+               
+                if (PlayerController->InteractAction)
+                {
+                    EnhancedInput->BindAction(
+                        PlayerController->InteractAction,
+                        ETriggerEvent::Completed,
+                        this,
+                        &ANXCharacterBase::Interact
+                    );
+                }
+        }
 	}
 
 }
@@ -170,6 +184,58 @@ void ANXCharacterBase::StopSprint(const FInputActionValue& value)
     }
 }
 
+void ANXCharacterBase::Interact(const FInputActionValue& value)
+{
+   
+    if (value.Get<bool>())
+    {
+       
+        if (!bHasKey)
+        {
+            if (GEngine)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("You don't have a key!"));
+            }
+            return;
+        }
+
+       
+        FVector Start = GetActorLocation();
+        FVector End = Start + (GetActorForwardVector() * 200.f);
+
+        FHitResult Hit;
+        FCollisionQueryParams Params;
+        Params.AddIgnoredActor(this);
+
+        bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params);
+        if (bHit)
+        {
+            ANXDoor* Door = Cast<ANXDoor>(Hit.GetActor());
+            if (Door)
+            {
+                Door->OpenDoor();
+                if (GEngine)
+                {
+                    GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Opened the door!"));
+                }
+            }
+            else
+            {
+                if (GEngine)
+                {
+                    GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("No door found in front."));
+                }
+            }
+        }
+        else
+        {
+            if (GEngine)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("Nothing hit."));
+            }
+        }
+    }
+}
 
 
 

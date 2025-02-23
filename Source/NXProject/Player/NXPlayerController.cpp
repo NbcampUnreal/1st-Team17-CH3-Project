@@ -7,7 +7,8 @@ ANXPlayerController::ANXPlayerController()
     JumpAction(nullptr),
     LookAction(nullptr),
     SprintAction(nullptr),
-    SitAction(nullptr)
+    SitAction(nullptr),
+    InteractAction(nullptr)
 {
 
 }
