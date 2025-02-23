@@ -1,5 +1,6 @@
 
 #include "Item/NXKeyItem.h"
+#include "Player/NXPlayerCharacter.h"
 #include "Engine/Engine.h"
 
 ANXKeyItem::ANXKeyItem()
@@ -9,12 +10,17 @@ ANXKeyItem::ANXKeyItem()
 
 void ANXKeyItem::ActivateItem(AActor* Activator)
 {
-	if (GEngine)
+	ANXPlayerCharacter* Player = Cast<ANXPlayerCharacter>(Activator);
+	if (Player)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Key Acquired!"));
+		//Player-> bHasKey = true; (캐릭터.cpp 수정후 사용)
 
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Key Acquired!"));
+
+		}
 	}
-
 	DestroyItem();
 }
 
