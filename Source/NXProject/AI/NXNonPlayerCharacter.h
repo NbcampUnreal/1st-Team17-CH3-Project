@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "Player/NXCharacterBase.h"
+#include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 #include "NXNonPlayerCharacter.generated.h"
 
 DECLARE_DELEGATE_TwoParams(FOnAttackMontageEnded, UAnimMontage*, bool /*bInterrupted*/)
@@ -24,12 +26,13 @@ public:
 
 	bool bIsNowAttacking;		// 공격 Task 구현
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float Strength;		// 공격력
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float MaxHP;	// 최대 체력
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float CurrentHP;	// 현재 체력
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float Defense;		// 방어력
 
 	virtual float TakeDamage
@@ -43,9 +46,12 @@ public:
 	bool IsDead() const;	// 체력이 0 이하인지 확인
 
 protected:
-	//virtual void BeginAttack();
 
-	//virtual void EndAttack(UAnimMontage* InMontage, bool bInterruped);		// 공격 Task 구현
+	FTimerHandle AttackDamageTimerHandle;
+
+	virtual void BeginAttack();
+
+	virtual void EndAttack(UAnimMontage* InMontage, bool bInterruped);		// 공격 Task 구현
 
 //-------------------------------공격 Task 구현---------------------------------------//
 
