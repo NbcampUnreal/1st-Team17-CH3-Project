@@ -2,49 +2,25 @@
 
 #include "CoreMinimal.h"
 #include "Item/NXBaseItem.h"
-#include "NXMineItem.generated.h"
-
-class USphereComponent;
-class UProjectileMovementComponent;
-class UStaticMeshComponent;
+#include "NXAttackItem.generated.h"
 
 UCLASS()
-class NXPROJECT_API ANXMineItem : public ANXBaseItem
+class NXPROJECT_API ANXAttackItem : public ANXBaseItem
 {
     GENERATED_BODY()
 
 public:
-    ANXMineItem();
-
-    UFUNCTION(BlueprintCallable, Category = "Item")
-    void ThrowItem(const FVector& LaunchVelocity);
+    ANXAttackItem();
 
 protected:
- 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mine|Component")
-    UStaticMeshComponent* MeshComp;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+    float AttackBoostAmount;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mine|Component")
-    USphereComponent* ExplosionCollision;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+    float BoostDuration;
 
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mine")
-    float ExplosionDelay;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mine")
-    float ExplosionRadius;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mine")
-    float ExplosionDamage;
-
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-    UProjectileMovementComponent* ProjectileMovement;
-
-    FTimerHandle ExplosionTimerHandle;
-
+   
     virtual void ActivateItem(AActor* Activator) override;
-
-    void Explode();
 };
