@@ -32,6 +32,8 @@ public:
 	UInputAction* SitAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* InteractAction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UInputAction* StandAction;
 
 	virtual void BeginPlay() override;
 };

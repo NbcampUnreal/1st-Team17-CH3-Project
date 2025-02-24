@@ -40,11 +40,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float SprintSpeed;
 
-
+	//¾É±â±¸Çö
 	bool bIsSitting;
-
-
-
+	
+	UFUNCTION()
+	void Sit(const FInputActionValue& value);
+	UFUNCTION()
+	void Stand(const FInputActionValue& value);
+	
 	UFUNCTION()
 	void Move(const FInputActionValue& value);
 	UFUNCTION()

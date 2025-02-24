@@ -27,6 +27,7 @@ ANXPlayerCharacter::ANXPlayerCharacter()
 
     GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
     bIsSitting = false;
+    
 
     bHasKey = false;
 
@@ -37,6 +38,7 @@ ANXPlayerCharacter::ANXPlayerCharacter()
 void ANXPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
+    
 }
 
 void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -103,6 +105,25 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
                     &ANXPlayerCharacter::StopSprint
                 );
             }
+            if (PlayerController->SitAction)
+            {
+                EnhancedInput->BindAction(
+                    PlayerController->SitAction,
+                    ETriggerEvent::Triggered,
+                    this,
+                    &ANXPlayerCharacter::Sit
+                );
+            }
+            if (PlayerController->StandAction)
+            {
+                EnhancedInput->BindAction(
+                    PlayerController->StandAction,
+                    ETriggerEvent::Triggered,
+                    this,
+                    &ANXPlayerCharacter::Stand
+                );
+            }
+            
 
             if (PlayerController->InteractAction)
             {
@@ -117,6 +138,36 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
     }
 }
 
+
+
+
+
+
+
+void ANXPlayerCharacter::Sit(const FInputActionValue& value)
+{
+    if (!bIsSitting)
+    {
+        // 앉기 동작 처리
+        bIsSitting = true;
+        UE_LOG(LogTemp, Warning, TEXT("Sitting!"));
+
+        
+    }
+
+}
+
+void ANXPlayerCharacter::Stand(const FInputActionValue& value)
+{
+    if (bIsSitting)
+    {
+        // 일어나기 동작 처리
+        bIsSitting = false;
+        UE_LOG(LogTemp, Warning, TEXT("Standing up!"));
+
+      
+    }
+}
 
 void ANXPlayerCharacter::Move(const FInputActionValue& value)
 {
