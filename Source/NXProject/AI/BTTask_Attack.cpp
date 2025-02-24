@@ -33,7 +33,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	ANXNonPlayerCharacter* NPC = Cast<ANXNonPlayerCharacter>(AIController->GetPawn());
 	checkf(IsValid(NPC) == true, TEXT("Invalid NPC."));
 
-	//NPC->BeginAttack();
+	NPC->BeginAttack();
 
 	return EBTNodeResult::InProgress;
 }
