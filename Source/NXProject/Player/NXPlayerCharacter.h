@@ -41,12 +41,23 @@ protected:
 	float SprintSpeed;
 
 	//앉기구현
+	 // 앉기 동작을 처리하는 함수
+	void StartSitting();
+	void StopSitting();
+
+	// 앉기 상태
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character State")
 	bool bIsSitting;
+
+	// 애니메이션 몽타주 (앉기 애니메이션)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* SitAnimMontage;
+
+	// 입력에 반응할 함수
+	void OnCrouchPressed();
 	
-	UFUNCTION()
-	void Sit(const FInputActionValue& value);
-	UFUNCTION()
-	void Stand(const FInputActionValue& value);
+	
+
 	
 	UFUNCTION()
 	void Move(const FInputActionValue& value);

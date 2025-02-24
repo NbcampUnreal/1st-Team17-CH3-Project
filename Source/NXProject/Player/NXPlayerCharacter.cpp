@@ -26,7 +26,10 @@ ANXPlayerCharacter::ANXPlayerCharacter()
     SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
 
     GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
+   
+    //앉기
     bIsSitting = false;
+    SitAnimMontage = nullptr;
     
 
     bHasKey = false;
@@ -105,25 +108,6 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
                     &ANXPlayerCharacter::StopSprint
                 );
             }
-            if (PlayerController->SitAction)
-            {
-                EnhancedInput->BindAction(
-                    PlayerController->SitAction,
-                    ETriggerEvent::Triggered,
-                    this,
-                    &ANXPlayerCharacter::Sit
-                );
-            }
-            if (PlayerController->StandAction)
-            {
-                EnhancedInput->BindAction(
-                    PlayerController->StandAction,
-                    ETriggerEvent::Triggered,
-                    this,
-                    &ANXPlayerCharacter::Stand
-                );
-            }
-            
 
             if (PlayerController->InteractAction)
             {
@@ -134,6 +118,8 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
                     &ANXPlayerCharacter::Interact
                 );
             }
+            //앉기 
+            PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ANXPlayerCharacter::OnCrouchPressed);
         }
     }
 }
@@ -144,28 +130,57 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 
 
-void ANXPlayerCharacter::Sit(const FInputActionValue& value)
-{
-    if (!bIsSitting)
-    {
-        // 앉기 동작 처리
-        bIsSitting = true;
-        UE_LOG(LogTemp, Warning, TEXT("Sitting!"));
-
-        
-    }
-
-}
-
-void ANXPlayerCharacter::Stand(const FInputActionValue& value)
+void ANXPlayerCharacter::StartSitting()
 {
     if (bIsSitting)
     {
-        // 일어나기 동작 처리
-        bIsSitting = false;
-        UE_LOG(LogTemp, Warning, TEXT("Standing up!"));
+        return;
+    }
 
-      
+    // 앉기 시작
+    bIsSitting = true;
+
+    // 애니메이션 몽타주 재생 (예: 앉기 애니메이션)
+    if (SitAnimMontage && GetMesh())
+    {
+        GetMesh()->GetAnimInstance()->Montage_Play(SitAnimMontage);
+    }
+
+    // 캐릭터의 높이를 낮추는 등 앉기 관련 설정
+    GetCapsuleComponent()->SetCapsuleHalfHeight(44.0f); // 예시로 높이 조정
+}
+
+void ANXPlayerCharacter::StopSitting()
+{
+    if (!bIsSitting)
+    {
+        return;
+    }
+
+    // 앉기 상태 종료
+    bIsSitting = false;
+
+    // 애니메이션 복귀 (앉기 애니메이션이 끝나고 일어날 때)
+    if (SitAnimMontage && GetMesh())
+    {
+        GetMesh()->GetAnimInstance()->Montage_Play(SitAnimMontage);
+    }
+
+    // 캐릭터 높이 원복
+    GetCapsuleComponent()->SetCapsuleHalfHeight(88.0f);
+}
+
+
+
+void ANXPlayerCharacter::OnCrouchPressed()
+{
+    if (bIsSitting)
+    {
+        StopSitting();
+    }
+    else
+    {
+        StartSitting();
     }
 }
 
