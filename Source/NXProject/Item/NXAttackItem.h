@@ -4,6 +4,10 @@
 #include "Item/NXBaseItem.h"
 #include "NXMineItem.generated.h"
 
+class USphereComponent;
+class UProjectileMovementComponent;
+class UStaticMeshComponent;
+
 UCLASS()
 class NXPROJECT_API ANXMineItem : public ANXBaseItem
 {
@@ -12,9 +16,18 @@ class NXPROJECT_API ANXMineItem : public ANXBaseItem
 public:
     ANXMineItem();
 
+    UFUNCTION(BlueprintCallable, Category = "Item")
+    void ThrowItem(const FVector& LaunchVelocity);
+
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|component")
+ 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mine|Component")
+    UStaticMeshComponent* MeshComp;
+
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mine|Component")
     USphereComponent* ExplosionCollision;
+
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mine")
     float ExplosionDelay;
@@ -24,6 +37,10 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mine")
     float ExplosionDamage;
+
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+    UProjectileMovementComponent* ProjectileMovement;
 
     FTimerHandle ExplosionTimerHandle;
 
