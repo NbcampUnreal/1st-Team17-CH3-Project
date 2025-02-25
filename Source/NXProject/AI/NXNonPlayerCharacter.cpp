@@ -47,7 +47,6 @@ void ANXNonPlayerCharacter::BeginPlay()
 	}
 }
 
-UE_DISABLE_OPTIMIZATION
 void ANXNonPlayerCharacter::OnCheckHit()
 {
 	TArray<FOverlapResult> OverlapResults; // 충돌 감지 후 감지된 액터들을 담아 놓을 배열
