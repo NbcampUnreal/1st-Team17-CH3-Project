@@ -1,16 +1,23 @@
 #include "NXKeyItem.h"
-#include "WJH_Character.h"
+#include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "Player/NXPlayerCharacter.h"
 
 ANXKeyItem::ANXKeyItem()
 {
     PrimaryActorTick.bCanEverTick = false;
 
-    USphereComponent* CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComponent"));
-    RootComponent = CollisionComponent;
-    CollisionComponent->SetSphereRadius(50.0f);
 
-    // 올바른 델리게이트 바인딩
+    KeyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("KeyMesh"));
+    RootComponent = KeyMesh;
+
+    
+    CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComponent"));
+    CollisionComponent->SetupAttachment(KeyMesh);
+    CollisionComponent->SetSphereRadius(50.0f);
+    CollisionComponent->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+
+
     CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ANXKeyItem::OnOverlap);
 }
 
@@ -28,12 +35,18 @@ void ANXKeyItem::OnOverlap(
     const FHitResult& SweepResult
 )
 {
-    if (!OtherActor) return;
-
-    AWJH_Character* Character = Cast<AWJH_Character>(OtherActor);
+    ANXPlayerCharacter* Character = Cast<ANXPlayerCharacter>(OtherActor);
     if (Character)
     {
-        Character->SetHasKey(true);
+       // Character->SetHasKey(true); 
+       
+        if (GEngine)
+        {
+            GEngine->AddOnScreenDebugMessage(
+                -1, 2.0f, FColor::Green, TEXT(" Key Acquired!!")
+            );
+        }
+
         Destroy();
     }
 }
