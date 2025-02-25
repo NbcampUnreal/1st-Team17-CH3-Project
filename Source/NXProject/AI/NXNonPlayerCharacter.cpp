@@ -3,6 +3,9 @@
 #include "AI/NXAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/NXAIAnimInstance.h"
+#include "Engine/OverlapResult.h"
+#include "Engine/DamageEvents.h"
+
 
 ANXNonPlayerCharacter::ANXNonPlayerCharacter()
 	: bIsNowAttacking(false)
@@ -29,6 +32,12 @@ void ANXNonPlayerCharacter::BeginPlay()
 	{
 		CurrentHP = MaxHP;
 
+		UNXAIAnimInstance* AIAnimInstance = Cast<UNXAIAnimInstance>(GetMesh()->GetAnimInstance());
+		if (IsValid(AIAnimInstance) == true)
+		{
+			AIAnimInstance->OnCheckHit.AddDynamic(this, &ThisClass::OnCheckHit);
+		}
+
 		bUseControllerRotationYaw = false;
 
 		GetCharacterMovement()->bOrientRotationToMovement = false;
@@ -39,10 +48,37 @@ void ANXNonPlayerCharacter::BeginPlay()
 	}
 }
 
+UE_DISABLE_OPTIMIZATION
+void ANXNonPlayerCharacter::OnCheckHit()
+{
+	TArray<FOverlapResult> OverlapResults; // 츙돌에 감지 후 감지된 액터들을 담아 놓을 배열
+	FCollisionQueryParams CollisionQueryParams(NAME_None, false, this); // 충돌 감지에 필요한 변수 선언
+	bool bResult = GetWorld()->OverlapMultiByChannel(OverlapResults, GetActorLocation(), FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel2, FCollisionShape::MakeSphere(300.f), CollisionQueryParams);
+	// 충돌 감지 함수 호출
+
+	if (bResult == true) // 충돌 감지에 성공하면
+	{
+		for (auto const& OverlapResult : OverlapResults) // 충돌 감지된 액터들을 순회
+		{
+			ACharacter* PlayerCharacter = Cast<ACharacter>(OverlapResult.GetActor());
+			if (IsValid(PlayerCharacter) == true)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Player damaged %d by Enemy")));
+				PlayerCharacter->TakeDamage(10.f, FDamageEvent(), GetController(), this); // 액터 들 중 플레이어 캐릭터의 경우엔 TakeDamage() 함수 호출 
+
+			}
+		}
+	}
+	DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
+	UKismetSystemLibrary::PrintString(this, TEXT("OnCheckHit()"));
+}
+
 void ANXNonPlayerCharacter::BeginAttack()
 {
 	UNXAIAnimInstance* AnimInstance = Cast<UNXAIAnimInstance>(GetMesh()->GetAnimInstance());
 	checkf(IsValid(AnimInstance) == true, TEXT("Invalid AnimInstance"));
+
+
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	if (IsValid(AnimInstance) == true && IsValid(AttackMontage) == true && AnimInstance->Montage_IsPlaying(AttackMontage) == false)
@@ -50,14 +86,6 @@ void ANXNonPlayerCharacter::BeginAttack()
 		AnimInstance->Montage_Play(AttackMontage);
 
 		bIsNowAttacking = true;
-
-		GetWorld()->GetTimerManager().SetTimer(		// 타이머 설정 (0.5초 후 데미지 적용)
-			AttackDamageTimerHandle,
-			this,
-			&ANXNonPlayerCharacter::ApplyAttackDamage,
-			0.5f, // 데미지 적용 시간
-			false // 반복 없음
-		);
 
 		if (OnAttackMontageEndedDelegate.IsBound() == false)
 		{
@@ -79,53 +107,4 @@ void ANXNonPlayerCharacter::EndAttack(UAnimMontage* InMontage, bool bInterruped)
 	{
 		OnAttackMontageEndedDelegate.Unbind();
 	}
-}
-
-void ANXNonPlayerCharacter::ApplyAttackDamage()
-{
-	// 주변 액터 검색
-	TArray<AActor*> OverlappingActors;
-	GetOverlappingActors(OverlappingActors);
-
-	for (AActor* Actor : OverlappingActors)
-	{
-		if (Actor && Actor->ActorHasTag("Player"))
-		{
-			// 데미지 적용
-			UGameplayStatics::ApplyDamage(
-				Actor,
-				Strength, // Strength는 캐릭터의 공격력
-				GetController(),
-				this,
-				UDamageType::StaticClass()
-			);
-		}
-	}
-}
-
-float ANXNonPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-	// 방어력을 고려한 최종 데미지 계산
-	float FinalDamage = FMath::Max(0.f, DamageAmount - Defense);
-	CurrentHP = FMath::Clamp(CurrentHP - FinalDamage, 0.f, MaxHP);
-
-	// 체력이 0 이하인지 확인
-	if (FMath::IsNearlyZero(CurrentHP))
-	{
-		// AI 종료 및 캐릭터 파괴
-		ANXAIController* AIController = Cast<ANXAIController>(GetController());
-		if (IsValid(AIController))
-		{
-			AIController->EndAI();
-		}
-		Destroy();
-	}
-
-	return FinalDamage;
-}
-
-bool ANXNonPlayerCharacter::IsDead() const
-{
-	// 체력이 0 이하인지 확인
-	return FMath::IsNearlyZero(CurrentHP);
 }
