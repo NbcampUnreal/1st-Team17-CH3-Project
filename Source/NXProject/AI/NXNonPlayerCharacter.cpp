@@ -51,24 +51,31 @@ void ANXNonPlayerCharacter::BeginPlay()
 UE_DISABLE_OPTIMIZATION
 void ANXNonPlayerCharacter::OnCheckHit()
 {
-	TArray<FOverlapResult> OverlapResults; // 츙돌에 감지 후 감지된 액터들을 담아 놓을 배열
+	TArray<FOverlapResult> OverlapResults; // 충돌 감지 후 감지된 액터들을 담아 놓을 배열
 	FCollisionQueryParams CollisionQueryParams(NAME_None, false, this); // 충돌 감지에 필요한 변수 선언
-	bool bResult = GetWorld()->OverlapMultiByChannel(OverlapResults, GetActorLocation(), FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel2, FCollisionShape::MakeSphere(300.f), CollisionQueryParams);
-	// 충돌 감지 함수 호출
+	bool bResult = GetWorld()->OverlapMultiByChannel(
+		OverlapResults, GetActorLocation(), FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel2,
+		FCollisionShape::MakeSphere(300.f), CollisionQueryParams
+	); // 충돌 감지 함수 호출
 
-	if (bResult == true) // 충돌 감지에 성공하면
+	if (bResult) // 충돌 감지에 성공하면
 	{
+		ACharacter* PlayerCharacter = nullptr; // 첫 번째 감지된 플레이어 캐릭터 저장 변수
+
 		for (auto const& OverlapResult : OverlapResults) // 충돌 감지된 액터들을 순회
 		{
-			ACharacter* PlayerCharacter = Cast<ACharacter>(OverlapResult.GetActor());
-			if (IsValid(PlayerCharacter) == true)
+			PlayerCharacter = Cast<ACharacter>(OverlapResult.GetActor());
+			if (IsValid(PlayerCharacter)) // 플레이어 캐릭터가 유효하면
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Player damaged %d by Enemy")));
-				PlayerCharacter->TakeDamage(10.f, FDamageEvent(), GetController(), this); // 액터 들 중 플레이어 캐릭터의 경우엔 TakeDamage() 함수 호출 
-
+				// 첫 번째 플레이어만 공격 후 반복문 종료
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Player damaged 10 by Enemy"));
+				PlayerCharacter->TakeDamage(10.f, FDamageEvent(), GetController(), this);
+				break;
 			}
 		}
 	}
+
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
 	UKismetSystemLibrary::PrintString(this, TEXT("OnCheckHit()"));
 }
