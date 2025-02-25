@@ -22,7 +22,9 @@ public:
 
 	virtual void BeginPlay() override;
 
-	void ApplyAttackDamage();		// 데미지 적용 함수
+	UFUNCTION()
+	void OnCheckHit();
+
 
 	bool bIsNowAttacking;		// 공격 Task 구현
 
@@ -35,15 +37,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float Defense;		// 방어력
 
-	virtual float TakeDamage
-	(
-		float DamageAmount,					// 받은 데미지 양
-		FDamageEvent const& DamageEvent,	// 데미지 이벤트 정보
-		AController* EventInstigator,		// 데미지를 가한 컨트롤러
-		AActor* DamageCauser				// 데미지를 가한 액터
-	) override;
-
-	bool IsDead() const;	// 체력이 0 이하인지 확인
 
 protected:
 
