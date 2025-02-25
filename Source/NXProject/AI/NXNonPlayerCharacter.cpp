@@ -1,5 +1,4 @@
 #include "AI/NXNonPlayerCharacter.h"
-
 #include "AI/NXAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/NXAIAnimInstance.h"
