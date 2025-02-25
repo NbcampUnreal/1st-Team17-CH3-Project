@@ -53,8 +53,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* SitAnimMontage;
 
-	// 입력에 반응할 함수
-	void OnCrouchPressed();
+	
 	
 	
 

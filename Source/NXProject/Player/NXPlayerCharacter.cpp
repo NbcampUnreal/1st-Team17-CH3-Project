@@ -119,14 +119,31 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
                 );
             }
             //앉기 
-            PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &ANXPlayerCharacter::OnCrouchPressed);
+            if (PlayerController->SitAction)
+            {
+                EnhancedInput->BindAction(
+                    PlayerController->SitAction,
+                    ETriggerEvent::Completed,
+                    this,
+                    &ANXPlayerCharacter::StartSitting
+                );
+
+            }
+            //일어나기
+            if (PlayerController->StandAction)
+            {
+                EnhancedInput->BindAction(
+                    PlayerController->StandAction,
+                    ETriggerEvent::Completed,
+                    this,
+                    &ANXPlayerCharacter::StopSitting
+                );
+            }
+            
+
         }
     }
 }
-
-
-
-
 
 
 
@@ -171,18 +188,6 @@ void ANXPlayerCharacter::StopSitting()
 }
 
 
-
-void ANXPlayerCharacter::OnCrouchPressed()
-{
-    if (bIsSitting)
-    {
-        StopSitting();
-    }
-    else
-    {
-        StartSitting();
-    }
-}
 
 void ANXPlayerCharacter::Move(const FInputActionValue& value)
 {
