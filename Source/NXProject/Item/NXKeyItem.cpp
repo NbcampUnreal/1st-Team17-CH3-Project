@@ -1,27 +1,39 @@
-
-#include "Item/NXKeyItem.h"
-#include "Player/NXPlayerCharacter.h"
-#include "Engine/Engine.h"
+#include "NXKeyItem.h"
+#include "WJH_Character.h"
+#include "Components/SphereComponent.h"
 
 ANXKeyItem::ANXKeyItem()
 {
-	ItemType = "Key";
+    PrimaryActorTick.bCanEverTick = false;
+
+    USphereComponent* CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComponent"));
+    RootComponent = CollisionComponent;
+    CollisionComponent->SetSphereRadius(50.0f);
+
+    // 올바른 델리게이트 바인딩
+    CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ANXKeyItem::OnOverlap);
 }
 
-void ANXKeyItem::ActivateItem(AActor* Activator)
+void ANXKeyItem::BeginPlay()
 {
-	ANXPlayerCharacter* Player = Cast<ANXPlayerCharacter>(Activator);
-	if (Player)
-	{
-		Player-> bHasKey = true; 
-
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Key Acquired!"));
-
-		}
-	}
-	DestroyItem();
+    Super::BeginPlay();
 }
 
+void ANXKeyItem::OnOverlap(
+    UPrimitiveComponent* OverlappedComponent,
+    AActor* OtherActor,
+    UPrimitiveComponent* OtherComp,
+    int32 OtherBodyIndex,
+    bool bFromSweep,
+    const FHitResult& SweepResult
+)
+{
+    if (!OtherActor) return;
 
+    AWJH_Character* Character = Cast<AWJH_Character>(OtherActor);
+    if (Character)
+    {
+        Character->SetHasKey(true);
+        Destroy();
+    }
+}

@@ -1,20 +1,27 @@
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Item/NXBaseItem.h"
+#include "GameFramework/Actor.h"
 #include "NXKeyItem.generated.h"
 
 UCLASS()
-class NXPROJECT_API ANXKeyItem : public ANXBaseItem
+class NXPROJECT_API ANXKeyItem : public AActor
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
 
 public:
-	ANXKeyItem();
+    ANXKeyItem();
 
 protected:
+    virtual void BeginPlay() override;
 
-	virtual void ActivateItem(AActor* Activator) override;
+    UFUNCTION()
+    void OnOverlap(
+        UPrimitiveComponent* OverlappedComponent,
+        AActor* OtherActor,
+        UPrimitiveComponent* OtherComp,
+        int32 OtherBodyIndex,
+        bool bFromSweep,
+        const FHitResult& SweepResult
+    );
 };

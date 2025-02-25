@@ -33,7 +33,7 @@ ANXBombItem::ANXBombItem()
     ProjectileMovement->InitialSpeed = 100.f;
     ProjectileMovement->MaxSpeed = 100.f;
     ProjectileMovement->bRotationFollowsVelocity = true;
-    ProjectileMovement->ProjectileGravityScale = 0.f;
+    ProjectileMovement->ProjectileGravityScale = 1.f;
    
 }
 
