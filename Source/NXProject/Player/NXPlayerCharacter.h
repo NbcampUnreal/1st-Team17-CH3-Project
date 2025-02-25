@@ -40,22 +40,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float SprintSpeed;
 
-	//앉기구현
-	 // 앉기 동작을 처리하는 함수
-	void StartSitting();
-	void StopSitting();
+	
+	
 
-	// 앉기 상태
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character State")
 	bool bIsSitting;
+	// 앉기 액션을 토글하는 함수
+	void ToggleSit();
 
-	// 애니메이션 몽타주 (앉기 애니메이션)
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
-	UAnimMontage* SitAnimMontage;
-
-	
-	
-	
+	// 애니메이션 상태를 업데이트하는 함수
+	void UpdateAnimationState();
 
 	
 	UFUNCTION()

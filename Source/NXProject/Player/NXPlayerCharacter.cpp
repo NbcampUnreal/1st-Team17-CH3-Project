@@ -10,7 +10,7 @@
 
 ANXPlayerCharacter::ANXPlayerCharacter()
 {
-    PrimaryActorTick.bCanEverTick = false;
+    PrimaryActorTick.bCanEverTick = true;
 
     SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArmComp->SetupAttachment(RootComponent);
@@ -29,7 +29,7 @@ ANXPlayerCharacter::ANXPlayerCharacter()
    
     //앉기
     bIsSitting = false;
-    SitAnimMontage = nullptr;
+
     
 
     bHasKey = false;
@@ -125,20 +125,22 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
                     PlayerController->SitAction,
                     ETriggerEvent::Completed,
                     this,
-                    &ANXPlayerCharacter::StartSitting
+                    &ANXPlayerCharacter::ToggleSit
                 );
 
             }
-            //일어나기
             if (PlayerController->StandAction)
             {
                 EnhancedInput->BindAction(
                     PlayerController->StandAction,
                     ETriggerEvent::Completed,
                     this,
-                    &ANXPlayerCharacter::StopSitting
+                    &ANXPlayerCharacter::ToggleSit
                 );
+
             }
+            
+            
             
 
         }
@@ -147,44 +149,42 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 
 
-void ANXPlayerCharacter::StartSitting()
+
+
+
+
+void ANXPlayerCharacter::ToggleSit()
 {
+    bIsSitting = !bIsSitting; // 앉고 일어나는 상태를 토글합니다.
+
+    // 앉았을 때 Capsule 높이를 줄여서 앉은 자세로 만든다.
     if (bIsSitting)
     {
-        return;
+        GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f); // 앉았을 때 높이 감소
+        GetCharacterMovement()->MaxWalkSpeed = 0.0f; // 앉았을 때 이동속도 0
     }
-
-    // 앉기 시작
-    bIsSitting = true;
-
-    // 애니메이션 몽타주 재생 (예: 앉기 애니메이션)
-    if (SitAnimMontage && GetMesh())
+    else
     {
-        GetMesh()->GetAnimInstance()->Montage_Play(SitAnimMontage);
+        GetCapsuleComponent()->SetCapsuleHalfHeight(88.0f); // 일어설 때 원래 높이로 복구
+        GetCharacterMovement()->MaxWalkSpeed = NormalSpeed; // 일어났을 때 기본 이동속도
     }
 
-    // 캐릭터의 높이를 낮추는 등 앉기 관련 설정
-    GetCapsuleComponent()->SetCapsuleHalfHeight(44.0f); // 예시로 높이 조정
+    // 애니메이션 상태 업데이트
+    UpdateAnimationState();
 }
 
-void ANXPlayerCharacter::StopSitting()
+
+
+void ANXPlayerCharacter::UpdateAnimationState()
 {
-    if (!bIsSitting)
+    // 앉기 상태를 애니메이션 블루프린트로 전달
+    ANXPlayerCharacter* MyCharacter = Cast<ANXPlayerCharacter>(GetOwner());
+    if (MyCharacter)
     {
-        return;
+        // 애니메이션 블루프린트에서 IsSitting 값을 설정
+        MyCharacter->bIsSitting = bIsSitting;
     }
 
-    // 앉기 상태 종료
-    bIsSitting = false;
-
-    // 애니메이션 복귀 (앉기 애니메이션이 끝나고 일어날 때)
-    if (SitAnimMontage && GetMesh())
-    {
-        GetMesh()->GetAnimInstance()->Montage_Play(SitAnimMontage);
-    }
-
-    // 캐릭터 높이 원복
-    GetCapsuleComponent()->SetCapsuleHalfHeight(88.0f);
 }
 
 
