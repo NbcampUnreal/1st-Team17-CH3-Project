@@ -1,9 +1,13 @@
 #include "AI/NXNonPlayerCharacter.h"
 #include "AI/NXAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/Actor.h"
 #include "Animation/NXAIAnimInstance.h"
 #include "Engine/OverlapResult.h"
 #include "Engine/DamageEvents.h"
+#include "TimerManager.h"
+#include "Engine/World.h"
+
 
 
 ANXNonPlayerCharacter::ANXNonPlayerCharacter()
@@ -81,9 +85,15 @@ void ANXNonPlayerCharacter::OnCheckHit()
 
 void ANXNonPlayerCharacter::IsDead()
 {
-	Destroy();
-	UE_LOG(LogTemp, Warning, TEXT("IsDead"));
-	
+	Super::IsDead();
+
+	FTimerHandle DeadTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
+		[&]()
+		{
+			Destroy();
+		}
+	), DeadEventDelayTime,false);
 }
 
 void ANXNonPlayerCharacter::BeginAttack()

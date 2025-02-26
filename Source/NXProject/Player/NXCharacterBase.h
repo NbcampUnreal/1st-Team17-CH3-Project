@@ -4,12 +4,14 @@
 #include "GameFramework/Character.h"
 #include "NXCharacterBase.generated.h"
 
-
+class UAnimMontage;
 
 UCLASS()
 class NXPROJECT_API ANXCharacterBase : public ACharacter
 {
 	GENERATED_BODY()
+
+
 
 public:
 	ANXCharacterBase();
@@ -19,6 +21,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void AddHealth(float Amount);
+
+	UFUNCTION()
+	virtual void IsDead();
+
+	virtual void PlayDeadAnimation();
 
 
 protected:
@@ -32,4 +39,7 @@ protected:
 	float Strength;		// 공격력UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float Defense;		// 방어력
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess))
+	TObjectPtr<UAnimMontage> DeadMontage;
 };

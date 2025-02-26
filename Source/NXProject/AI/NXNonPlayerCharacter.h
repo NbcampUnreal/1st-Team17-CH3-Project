@@ -6,6 +6,7 @@
 #include "TimerManager.h"
 #include "NXNonPlayerCharacter.generated.h"
 
+
 DECLARE_DELEGATE_TwoParams(FOnAttackMontageEnded, UAnimMontage*, bool /*bInterrupted*/)
 
 class UAnimMontage;		// 공격 Task 구현
@@ -24,12 +25,10 @@ public:
 
 	UFUNCTION()
 	void OnCheckHit();
-	UFUNCTION()
-	virtual void IsDead();
+
+	virtual void IsDead() override;
 
 	bool bIsNowAttacking;		// 공격 Task 구현B
-
-	
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
@@ -37,10 +36,13 @@ public:
 protected:
 
 	FTimerHandle AttackDamageTimerHandle;
+	bool DeadEventDelayTime;
+
 
 	virtual void BeginAttack();
 
 	virtual void EndAttack(UAnimMontage* InMontage, bool bInterruped);		// 공격 Task 구현
+
 
 //-------------------------------공격 Task 구현---------------------------------------//
 
