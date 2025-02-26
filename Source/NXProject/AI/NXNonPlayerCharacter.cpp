@@ -18,6 +18,7 @@ ANXNonPlayerCharacter::ANXNonPlayerCharacter()
 //----------Ω∫≈› √ ±‚»≠----------//
 	Defense = 10.f;
 	Strength = 15.f;
+	MaxHealth = 500.0f;
 //-------------------------------//
 }
 
@@ -131,7 +132,7 @@ float ANXNonPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& 
 		DamageCalculation = 0;
 	}
 	Health = FMath::Clamp(Health - DamageCalculation, 0.0f, MaxHealth);
-	//UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
+	UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
 
 	if (Health <= 0.0f)
 	{

@@ -9,6 +9,9 @@
 #include "Camera/CameraComponent.h"
 #include "WeaponBase.h"
 #include "Animation/NXCharacterAnimInstance.h"
+#include "Engine/OverlapResult.h"
+#include "Engine/DamageEvents.h"
+
 
 
 ANXPlayerCharacter::ANXPlayerCharacter()
@@ -28,9 +31,13 @@ ANXPlayerCharacter::ANXPlayerCharacter()
     SprintSpeedMultiplier = 1.7f;
     SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
 
-    GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
-    Defense = 1;
     
+    GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
+    
+    MaxHealth = 1000;
+    Strength = 15;
+    
+    Defense = 1;
     bIsSitting = false;
     bIsDead = false;
     bIsReloading = false;
@@ -46,6 +53,12 @@ ANXPlayerCharacter::ANXPlayerCharacter()
 void ANXPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    UNXCharacterAnimInstance* AnimInstance = Cast<UNXCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+    if (IsValid(AnimInstance) == true)
+    {
+        AnimInstance->OnCheckHit.AddDynamic(this, &ThisClass::OnCheckHit);
+    }
 
 }
 
@@ -155,6 +168,37 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInput
     }
 }
 
+void ANXPlayerCharacter::OnCheckHit()
+{
+    TArray<FOverlapResult> OverlapResults; // 충돌 감지 후 감지된 액터들을 담아 놓을 배열
+    FCollisionQueryParams CollisionQueryParams(NAME_None, false, this); // 충돌 감지에 필요한 변수 선언
+    bool bResult = GetWorld()->OverlapMultiByChannel(
+        OverlapResults, GetActorLocation(), FQuat::Identity,
+        ECollisionChannel::ECC_GameTraceChannel2,
+        FCollisionShape::MakeSphere(300.f), CollisionQueryParams
+    ); // 충돌 감지 함수 호출
+
+    if (bResult) // 충돌 감지에 성공하면
+    {
+        ACharacter* PlayerCharacter = nullptr; // 첫 번째 감지된 플레이어 캐릭터 저장 변수
+
+        for (auto const& OverlapResult : OverlapResults) // 충돌 감지된 액터들을 순회
+        {
+            PlayerCharacter = Cast<ACharacter>(OverlapResult.GetActor());
+            if (IsValid(PlayerCharacter)) // 플레이어 캐릭터가 유효하면
+            {
+                // 첫 번째 플레이어만 공격 후 반복문 종료
+                PlayerCharacter->TakeDamage(Strength, FDamageEvent(), GetController(), this);
+                //UE_LOG(LogTemp, Warning, TEXT(" Player Health decreased to: %f"), Health);
+                break;
+            }
+        }
+    }
+
+    DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
+    //UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
+}
+
 float ANXPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
     float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -164,7 +208,7 @@ float ANXPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
         DamageCalculation = 0;
     }
     Health = FMath::Clamp(Health - DamageCalculation, 0.0f, MaxHealth);
-    //UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
+    UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
 
     if (Health <= 0.0f)
     {
