@@ -113,3 +113,26 @@ void ANXNonPlayerCharacter::EndAttack(UAnimMontage* InMontage, bool bInterruped)
 		OnAttackMontageEndedDelegate.Unbind();
 	}
 }
+
+
+void ANXNonPlayerCharacter::OnDeath()
+{
+	UE_LOG(LogTemp, Error, TEXT("Dead"));
+
+}
+
+float ANXNonPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	Health = FMath::Clamp(Health - DamageAmount, 0.0f, MaxHealth);
+	UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
+
+	if (Health <= 0.0f)
+	{
+		OnDeath();
+	}
+
+	return ActualDamage;
+}
+
