@@ -34,6 +34,7 @@ public:
     UBoxComponent* PortalTrigger;
 
     // 이동할 레벨 이름 (우창님이 변경)
-    UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Portal")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Portal")
     FName NextLevelName;
+
 };

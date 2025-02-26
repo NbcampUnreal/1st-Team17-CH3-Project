@@ -2,6 +2,7 @@
 #include "Components/BoxComponent.h"
 #include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
 
 ANXPortal::ANXPortal()
 {
@@ -30,17 +31,16 @@ void ANXPortal::OnOverlap(
     const FHitResult& SweepResult
 )
 {
-    if (OtherActor && OtherActor->ActorHasTag("Player"))
-    {
-        if (GEngine)
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Portal Activated!"));
-        }
-        UE_LOG(LogTemp, Warning, TEXT("Moving to level: %s"), *NextLevelName.ToString());
+    if (!OtherActor) return;
 
-        //다음 레벨로 넘어가기
+    // 플레이어만 감지 (ACharacter 기반)
+    if (OtherActor->IsA(ACharacter::StaticClass()))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Player entered the portal: %s"), *GetNameSafe(OtherActor));
+
         if (!NextLevelName.IsNone())
         {
+            UE_LOG(LogTemp, Warning, TEXT("Moving to level: %s"), *NextLevelName.ToString());
             UGameplayStatics::OpenLevel(this, NextLevelName);
         }
         else
@@ -49,9 +49,6 @@ void ANXPortal::OnOverlap(
         }
     }
 }
-
- 
-
 
 
 
