@@ -190,12 +190,12 @@ void ANXPlayerCharacter::OnReloadPressed()
 
 void ANXPlayerCharacter::BeginCrouch(const FInputActionValue& value)
 {
-    Crouch();
+    ACharacter::Crouch();
 }
 
 void ANXPlayerCharacter::EndCrouch(const FInputActionValue& value)
 {
-    UnCrouch();
+    ACharacter::UnCrouch();
 }
 
 void ANXPlayerCharacter::Move(const FInputActionValue& value)
