@@ -19,7 +19,21 @@ protected:
 	UFUNCTION()
 	void AnimNotify_CheckHit();
 
-public:
-	FOnCheckHit OnCheckHit; // 위에서 정의한 델리게이트 자료형을 통해 델리게이트 개체 선언.
+	void AnimNotify_IsDead();
 
+public:
+	virtual void NativeInitializeAnimation() override;
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class ACharacter> Character;
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class UCharacterMovementComponent> MovementComponent;
+
+	UPROPERTY(BlueprintReadOnly)
+	float Speed;
+
+	FOnCheckHit OnCheckHit; // 위에서 정의한 델리게이트 자료형을 통해 델리게이트 개체 선언.
+	FOnCheckHit IsDead;
 };

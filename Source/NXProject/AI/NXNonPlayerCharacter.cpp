@@ -66,7 +66,7 @@ void ANXNonPlayerCharacter::OnCheckHit()
 			{
 				// 첫 번째 플레이어만 공격 후 반복문 종료
 				PlayerCharacter->TakeDamage(Strength, FDamageEvent(), GetController(), this);
-				UE_LOG(LogTemp, Warning, TEXT(" Player Health decreased to: %f"), Health);
+				//UE_LOG(LogTemp, Warning, TEXT(" Player Health decreased to: %f"), Health);
 				break;
 			}
 		}
@@ -75,8 +75,14 @@ void ANXNonPlayerCharacter::OnCheckHit()
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
 	UKismetSystemLibrary::PrintString(this, TEXT("OnCheckHit()"));
 
-	UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
+	//UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
+}
 
+void ANXNonPlayerCharacter::IsDead()
+{
+	Destroy();
+	UE_LOG(LogTemp, Warning, TEXT("IsDead"));
+	
 }
 
 void ANXNonPlayerCharacter::BeginAttack()
@@ -116,14 +122,6 @@ void ANXNonPlayerCharacter::EndAttack(UAnimMontage* InMontage, bool bInterruped)
 }
 
 
-void ANXNonPlayerCharacter::OnDeath()
-{
-
-	Destroy();
-	UE_LOG(LogTemp, Error, TEXT("Dead"));
-
-}
-
 float ANXNonPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -133,13 +131,12 @@ float ANXNonPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& 
 		DamageCalculation = 0;
 	}
 	Health = FMath::Clamp(Health - DamageCalculation, 0.0f, MaxHealth);
-	UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
+	//UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
 
 	if (Health <= 0.0f)
 	{
-		OnDeath();
+		IsDead();
 	}
 
 	return ActualDamage;
 }
-
