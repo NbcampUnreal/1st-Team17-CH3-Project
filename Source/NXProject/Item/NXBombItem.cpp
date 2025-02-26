@@ -11,7 +11,7 @@
 ANXBombItem::ANXBombItem()
 {
    
-    ExplosionDelay = 3.0f;
+    ExplosionDelay = 0.5f;
     ExplosionRadius = 250.f;
     ExplosionDamage = 30.f;
     ItemType = "Mine";

@@ -26,14 +26,10 @@ public:
 	void OnCheckHit();
 
 
-	bool bIsNowAttacking;		// 공격 Task 구현
+	bool bIsNowAttacking;		// 공격 Task 구현B
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
-	float Strength;		// 공격력
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
-	float MaxHP;	// 최대 체력
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
-	float CurrentHP;	// 현재 체력
+	float Strength;		// 공격력UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float Defense;		// 방어력
 

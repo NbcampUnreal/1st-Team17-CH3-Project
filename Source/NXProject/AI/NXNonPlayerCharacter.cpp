@@ -16,11 +16,9 @@ ANXNonPlayerCharacter::ANXNonPlayerCharacter()
 	//ANXNonPlayerCharacter는 레벨에 배치되거나 새롭게 생성되면 NXAIController의 빙의가 자동으로 진행됨.
 
 //----------스텟 초기화----------//
-	MaxHP = 100.f;
-	CurrentHP = MaxHP;
 	Defense = 10.f;
 	Strength = 15.f;
-	//-------------------------------//
+//-------------------------------//
 }
 
 void ANXNonPlayerCharacter::BeginPlay()
@@ -29,7 +27,7 @@ void ANXNonPlayerCharacter::BeginPlay()
 
 	if (false == IsPlayerControlled())
 	{
-		CurrentHP = MaxHP;
+		Health = MaxHealth;
 
 		UNXAIAnimInstance* AIAnimInstance = Cast<UNXAIAnimInstance>(GetMesh()->GetAnimInstance());
 		if (IsValid(AIAnimInstance) == true)
@@ -67,8 +65,8 @@ void ANXNonPlayerCharacter::OnCheckHit()
 			if (IsValid(PlayerCharacter)) // 플레이어 캐릭터가 유효하면
 			{
 				// 첫 번째 플레이어만 공격 후 반복문 종료
-				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Player damaged 10 by Enemy"));
-				PlayerCharacter->TakeDamage(10.f, FDamageEvent(), GetController(), this);
+				PlayerCharacter->TakeDamage(Strength, FDamageEvent(), GetController(), this);
+				UE_LOG(LogTemp, Warning, TEXT(" Player Health decreased to: %f"), Health);
 				break;
 			}
 		}
@@ -76,6 +74,9 @@ void ANXNonPlayerCharacter::OnCheckHit()
 
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
 	UKismetSystemLibrary::PrintString(this, TEXT("OnCheckHit()"));
+
+	UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
+
 }
 
 void ANXNonPlayerCharacter::BeginAttack()
@@ -117,6 +118,8 @@ void ANXNonPlayerCharacter::EndAttack(UAnimMontage* InMontage, bool bInterruped)
 
 void ANXNonPlayerCharacter::OnDeath()
 {
+
+	Destroy();
 	UE_LOG(LogTemp, Error, TEXT("Dead"));
 
 }
@@ -124,8 +127,12 @@ void ANXNonPlayerCharacter::OnDeath()
 float ANXNonPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
-	Health = FMath::Clamp(Health - DamageAmount, 0.0f, MaxHealth);
+	float DamageCalculation(DamageAmount - Defense);
+	if (DamageCalculation <= 0)
+	{
+		DamageCalculation = 0;
+	}
+	Health = FMath::Clamp(Health - DamageCalculation, 0.0f, MaxHealth);
 	UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
 
 	if (Health <= 0.0f)
