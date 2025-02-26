@@ -18,7 +18,6 @@ public:
 protected:
     virtual void BeginPlay() override;
 
-    // 충돌 감지 함수
     UFUNCTION()
     void OnOverlap(
         UPrimitiveComponent* OverlappedComponent,
@@ -30,15 +29,14 @@ protected:
     );
 
 public:
-    // 포탈의 충돌 영역 (박스 컴포넌트)
+   
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
     UBoxComponent* PortalTrigger;
 
-    // 포탈의 시각적 표현 (스태틱 메쉬 컴포넌트)
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
     UStaticMeshComponent* PortalMesh;
 
-    // 이동할 레벨 이름 (레벨 기획자가 인스턴스별로 설정 가능)
+    // 이동할 레벨 (우창님이 변경 예정)
     UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Portal")
     FName NextLevelName;
 };
