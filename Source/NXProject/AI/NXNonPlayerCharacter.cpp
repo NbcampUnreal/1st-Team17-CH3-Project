@@ -80,6 +80,7 @@ void ANXNonPlayerCharacter::OnCheckHit()
 
 void ANXNonPlayerCharacter::IsDead()
 {
+	Destroy();
 	UE_LOG(LogTemp, Warning, TEXT("IsDead"));
 	
 }
