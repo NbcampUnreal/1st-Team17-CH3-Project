@@ -38,6 +38,9 @@ public:
 	float Defense;		// ¹æ¾î·Â
 
 
+	virtual void OnDeath();
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
 protected:
 
 	FTimerHandle AttackDamageTimerHandle;

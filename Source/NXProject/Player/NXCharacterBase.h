@@ -25,17 +25,4 @@ protected:
 	float MaxHealth;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Health")
 	float Health;
-	UFUNCTION(BlueprintCallable, Category = "Health")
-	virtual void OnDeath();
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-	
-	
-
-	
-	
-	virtual void BeginPlay() override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	
-
 };
