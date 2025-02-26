@@ -19,7 +19,9 @@ protected:
 	UFUNCTION()
 	void AnimNotify_CheckHit();
 
+	void AnimNotify_IsDead();
+
 public:
 	FOnCheckHit OnCheckHit; // 위에서 정의한 델리게이트 자료형을 통해 델리게이트 개체 선언.
-
+	FOnCheckHit IsDead;
 };

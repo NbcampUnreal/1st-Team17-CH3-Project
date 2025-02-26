@@ -10,3 +10,11 @@ void UNXAIAnimInstance::AnimNotify_CheckHit()
 		OnCheckHit.Broadcast();
 	}
 }
+
+void UNXAIAnimInstance::AnimNotify_IsDead()
+{
+	if (IsDead.IsBound() == true)
+	{
+		IsDead.Broadcast();
+	}
+}
