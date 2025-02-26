@@ -7,6 +7,9 @@
 #include "Item/NXDoor.h"
 #include "Engine/Engine.h"
 #include "Camera/CameraComponent.h"
+#include "WeaponBase.h"
+#include "Animation/NXCharacterAnimInstance.h"
+
 
 ANXPlayerCharacter::ANXPlayerCharacter()
 {
@@ -27,8 +30,11 @@ ANXPlayerCharacter::ANXPlayerCharacter()
 
     GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
    
-    //앉기
+    
     bIsSitting = false;
+    
+
+    bIsReloading = false;
 
     
 
@@ -48,8 +54,13 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+
     if (UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent))
     {
+        //공격(Attack) 바인딩?
+        EnhancedInput->BindAction(AttackAction, ETriggerEvent::Started, this, &ThisClass::InputAttack);
+
+
         if (ANXPlayerController* PlayerController = Cast<ANXPlayerController>(GetController()))
         {
             if (PlayerController->MoveAction)
@@ -118,76 +129,74 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
                     &ANXPlayerCharacter::Interact
                 );
             }
-            //앉기 
-            if (PlayerController->SitAction)
+            //Idle에서 Crouch(Sit)
+            if (PlayerController->CrouchAction)
             {
                 EnhancedInput->BindAction(
-                    PlayerController->SitAction,
-                    ETriggerEvent::Completed,
+                    PlayerController->CrouchAction,
+                    ETriggerEvent::Triggered,
                     this,
-                    &ANXPlayerCharacter::ToggleSit
+                    &ANXPlayerCharacter::BeginCrouch
                 );
-
             }
-            if (PlayerController->StandAction)
+             //앉기에서 Idle(Stand)
+            if (PlayerController->UnCrouchAction)
             {
                 EnhancedInput->BindAction(
-                    PlayerController->StandAction,
-                    ETriggerEvent::Completed,
+                    PlayerController->UnCrouchAction,
+                    ETriggerEvent::Triggered,
                     this,
-                    &ANXPlayerCharacter::ToggleSit
+                    &ANXPlayerCharacter::EndCrouch
                 );
-
             }
-            
-            
-            
+
+
 
         }
     }
 }
 
 
-
-
-
-
-
-void ANXPlayerCharacter::ToggleSit()
+void ANXPlayerCharacter::FireWeapon()
 {
-    bIsSitting = !bIsSitting; // 앉고 일어나는 상태를 토글합니다.
-
-    // 앉았을 때 Capsule 높이를 줄여서 앉은 자세로 만든다.
-    if (bIsSitting)
+    if (EquippedWeapon && !bIsReloading)
     {
-        GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f); // 앉았을 때 높이 감소
-        GetCharacterMovement()->MaxWalkSpeed = 0.0f; // 앉았을 때 이동속도 0
+        EquippedWeapon->Fire(); 
     }
-    else
-    {
-        GetCapsuleComponent()->SetCapsuleHalfHeight(88.0f); // 일어설 때 원래 높이로 복구
-        GetCharacterMovement()->MaxWalkSpeed = NormalSpeed; // 일어났을 때 기본 이동속도
-    }
+}
 
-    // 애니메이션 상태 업데이트
-    UpdateAnimationState();
+void ANXPlayerCharacter::ReloadWeapon()
+{
+    if (EquippedWeapon && !bIsReloading)
+    {
+        bIsReloading = true;
+        EquippedWeapon->Reload(); 
+    }
+}
+
+void ANXPlayerCharacter::OnFirePressed()
+{
+    FireWeapon();
+}
+
+void ANXPlayerCharacter::OnReloadPressed()
+{
+    ReloadWeapon();
 }
 
 
 
-void ANXPlayerCharacter::UpdateAnimationState()
-{
-    // 앉기 상태를 애니메이션 블루프린트로 전달
-    ANXPlayerCharacter* MyCharacter = Cast<ANXPlayerCharacter>(GetOwner());
-    if (MyCharacter)
-    {
-        // 애니메이션 블루프린트에서 IsSitting 값을 설정
-        MyCharacter->bIsSitting = bIsSitting;
-    }
 
+
+void ANXPlayerCharacter::BeginCrouch(const FInputActionValue& value)
+{
+    Crouch();
 }
 
-
+void ANXPlayerCharacter::EndCrouch(const FInputActionValue& value)
+{
+    UnCrouch();
+}
 
 void ANXPlayerCharacter::Move(const FInputActionValue& value)
 {
@@ -297,5 +306,21 @@ void ANXPlayerCharacter::Interact(const FInputActionValue& value)
                 GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("Nothing hit."));
             }
         }
+    }
+}
+void ANXPlayerCharacter::InputAttack(const FInputActionValue& Invalue)
+{
+    //UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Attack()")));
+
+    if (GetCharacterMovement()->IsFalling() == true)
+    {
+        
+        return;
+    }
+
+    UNXCharacterAnimInstance* AnimInstance = Cast<UNXCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+    if (IsValid(AnimInstance) == true && IsValid(AttackMontage) == true && AnimInstance->Montage_IsPlaying(AttackMontage) == false)
+    {
+        AnimInstance->Montage_Play(AttackMontage);
     }
 }

@@ -20,7 +20,6 @@ public:
 	
 	AWeaponBase();
 
-protected:
 	
 	virtual void BeginPlay() override;
 
@@ -49,5 +48,7 @@ protected:
     void Reload();
 
     int32 CurrentAmmo;  // 현재 장탄수
+
+private:
     bool bIsReloading;  // 재장전 중 여부
 };
