@@ -29,11 +29,10 @@ ANXPlayerCharacter::ANXPlayerCharacter()
     SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
 
     GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
-   
+    Defense = 1;
     
     bIsSitting = false;
-    
-
+    bIsDead = false;
     bIsReloading = false;
 
     
@@ -47,10 +46,10 @@ ANXPlayerCharacter::ANXPlayerCharacter()
 void ANXPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
-    
+
 }
 
-void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
@@ -139,7 +138,7 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
                     &ANXPlayerCharacter::BeginCrouch
                 );
             }
-             //¾É±â¿¡¼­ Idle(Stand)
+            //¾É±â¿¡¼­ Idle(Stand)
             if (PlayerController->UnCrouchAction)
             {
                 EnhancedInput->BindAction(
@@ -156,12 +155,38 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
     }
 }
 
+float ANXPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+    float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+    float DamageCalculation(DamageAmount - Defense);
+    if (DamageCalculation <= 0)
+    {
+        DamageCalculation = 0;
+    }
+    Health = FMath::Clamp(Health - DamageCalculation, 0.0f, MaxHealth);
+    //UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
+
+    if (Health <= 0.0f)
+    {
+        IsDead();
+    }
+
+    return ActualDamage;
+   
+}
+
+void ANXPlayerCharacter::IsDead()
+{
+    Destroy();
+    UE_LOG(LogTemp, Warning, TEXT("IsDead")); 
+}
+
 
 void ANXPlayerCharacter::FireWeapon()
 {
     if (EquippedWeapon && !bIsReloading)
     {
-        EquippedWeapon->Fire(); 
+        EquippedWeapon->Fire();
     }
 }
 
@@ -170,7 +195,7 @@ void ANXPlayerCharacter::ReloadWeapon()
     if (EquippedWeapon && !bIsReloading)
     {
         bIsReloading = true;
-        EquippedWeapon->Reload(); 
+        EquippedWeapon->Reload();
     }
 }
 
@@ -188,17 +213,17 @@ void ANXPlayerCharacter::OnReloadPressed()
 
 
 
-void ANXPlayerCharacter::BeginCrouch(const FInputActionValue& value)
+void ANXPlayerCharacter::BeginCrouch(const FInputActionValue & value)
 {
     ACharacter::Crouch();
 }
 
-void ANXPlayerCharacter::EndCrouch(const FInputActionValue& value)
+void ANXPlayerCharacter::EndCrouch(const FInputActionValue & value)
 {
     ACharacter::UnCrouch();
 }
 
-void ANXPlayerCharacter::Move(const FInputActionValue& value)
+void ANXPlayerCharacter::Move(const FInputActionValue & value)
 {
     if (!Controller) return;
 
@@ -215,7 +240,7 @@ void ANXPlayerCharacter::Move(const FInputActionValue& value)
     }
 }
 
-void ANXPlayerCharacter::StartJump(const FInputActionValue& value)
+void ANXPlayerCharacter::StartJump(const FInputActionValue & value)
 {
     if (value.Get<bool>())
     {
@@ -223,7 +248,7 @@ void ANXPlayerCharacter::StartJump(const FInputActionValue& value)
     }
 }
 
-void ANXPlayerCharacter::StopJump(const FInputActionValue& value)
+void ANXPlayerCharacter::StopJump(const FInputActionValue & value)
 {
     if (!value.Get<bool>())
     {
@@ -231,7 +256,7 @@ void ANXPlayerCharacter::StopJump(const FInputActionValue& value)
     }
 }
 
-void ANXPlayerCharacter::Look(const FInputActionValue& value)
+void ANXPlayerCharacter::Look(const FInputActionValue & value)
 {
     FVector2D LookInput = value.Get<FVector2D>();
 
@@ -240,7 +265,7 @@ void ANXPlayerCharacter::Look(const FInputActionValue& value)
     AddControllerPitchInput(LookInput.Y);
 }
 
-void ANXPlayerCharacter::StartSprint(const FInputActionValue& value)
+void ANXPlayerCharacter::StartSprint(const FInputActionValue & value)
 {
     if (GetCharacterMovement())
     {
@@ -248,7 +273,7 @@ void ANXPlayerCharacter::StartSprint(const FInputActionValue& value)
     }
 }
 
-void ANXPlayerCharacter::StopSprint(const FInputActionValue& value)
+void ANXPlayerCharacter::StopSprint(const FInputActionValue & value)
 {
     if (GetCharacterMovement())
     {
@@ -256,7 +281,7 @@ void ANXPlayerCharacter::StopSprint(const FInputActionValue& value)
     }
 }
 
-void ANXPlayerCharacter::Interact(const FInputActionValue& value)
+void ANXPlayerCharacter::Interact(const FInputActionValue & value)
 {
 
     if (value.Get<bool>())
@@ -308,13 +333,13 @@ void ANXPlayerCharacter::Interact(const FInputActionValue& value)
         }
     }
 }
-void ANXPlayerCharacter::InputAttack(const FInputActionValue& Invalue)
+void ANXPlayerCharacter::InputAttack(const FInputActionValue & Invalue)
 {
     //UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Attack()")));
 
     if (GetCharacterMovement()->IsFalling() == true)
     {
-        
+
         return;
     }
 
@@ -324,3 +349,713 @@ void ANXPlayerCharacter::InputAttack(const FInputActionValue& Invalue)
         AnimInstance->Montage_Play(AttackMontage);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

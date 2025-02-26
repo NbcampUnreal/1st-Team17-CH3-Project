@@ -35,7 +35,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* AttackMontage;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	bool bIsDead;
+
+	void IsDead();
+	
 	//************카메라************
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
@@ -67,6 +72,7 @@ protected:
 	void OnReloadPressed();
 	// 무기 소지 여부
 	bool bIsReloading;
+
 	
 	
 
