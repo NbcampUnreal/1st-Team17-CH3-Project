@@ -34,7 +34,15 @@ public:
 	UInputAction* CrouchAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* UnCrouchAction;
-	
 
+
+public:
+	//À§Á¬
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> HUDWidgetClass;
+
+protected:
 	virtual void BeginPlay() override;
+
+	
 };

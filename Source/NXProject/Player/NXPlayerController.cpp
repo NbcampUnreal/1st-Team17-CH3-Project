@@ -1,5 +1,6 @@
 #include "Player/NXPlayerController.h"
 #include "EnhancedInputSubsystems.h"
+#include "Blueprint/UserWidget.h"
 
 ANXPlayerController::ANXPlayerController()
 	:InputMappingContext(nullptr),
@@ -19,6 +20,8 @@ void ANXPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
+
+
     // 현재 PlayerController에 연결된 Local Player 객체를 가져옴    
     if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
     {
@@ -34,4 +37,12 @@ void ANXPlayerController::BeginPlay()
         }
     }
 
+    if (HUDWidgetClass)
+    {
+        UUserWidget* HUDWidget = CreateWidget<UUserWidget>(this, HUDWidgetClass);
+        if (HUDWidget)
+        {
+            HUDWidget->AddToViewport();
+        }
+    }
 }

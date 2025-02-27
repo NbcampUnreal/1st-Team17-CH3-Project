@@ -17,10 +17,10 @@ public:
 	ANXCharacterBase();
 	
 	UFUNCTION(BlueprintPure, Category = "Health")
-	int GetHealth() const;
+	virtual float GetHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Health")
-	void AddHealth(float Amount);
+	virtual void AddHealth(float Amount);
 
 
 

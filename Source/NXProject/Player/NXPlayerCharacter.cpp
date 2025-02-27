@@ -1,6 +1,6 @@
 #include "Player/NXPlayerCharacter.h"
 #include "EnhancedInputComponent.h"
-#include "NXPlayerController.h"
+#include "Player/NXPlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -11,6 +11,10 @@
 #include "Animation/NXCharacterAnimInstance.h"
 #include "Engine/OverlapResult.h"
 #include "Engine/DamageEvents.h"
+#include "Components/WidgetComponent.h"
+#include "Components/TextBlock.h"
+#include "Components/ProgressBar.h"
+#include "Blueprint/UserWidget.h"
 
 
 
@@ -27,32 +31,45 @@ ANXPlayerCharacter::ANXPlayerCharacter()
     CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
     CameraComp->bUsePawnControlRotation = false;
 
+    OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
+    OverheadWidget->SetupAttachment(GetMesh());
+    OverheadWidget->SetWidgetSpace(EWidgetSpace::Screen);
+
+
     NormalSpeed = 700.0f;
     SprintSpeedMultiplier = 1.7f;
     SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
 
-    
+
     GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
-    
+
     MaxHealth = 1000;
     Strength = 15;
-    
+
     Defense = 1;
     bIsSitting = false;
     bIsDead = false;
     bIsReloading = false;
-
-    
-
     bHasKey = false;
+   
+   
+}
 
-    Tags.Add(FName("Player"));
+void ANXPlayerCharacter::PickupKey()
+{
+    bHasKey = true;
 
+    this->Tags.Add(FName("HasKey"));
+
+
+    UE_LOG(LogTemp, Warning, TEXT("Key picked up!"));
 }
 
 void ANXPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+   
 
     UNXCharacterAnimInstance* AnimInstance = Cast<UNXCharacterAnimInstance>(GetMesh()->GetAnimInstance());
     if (IsValid(AnimInstance) == true)
@@ -189,6 +206,7 @@ void ANXPlayerCharacter::OnCheckHit()
             {
                 // 첫 번째 플레이어만 공격 후 반복문 종료
                 PlayerCharacter->TakeDamage(Strength, FDamageEvent(), GetController(), this);
+             
                 //UE_LOG(LogTemp, Warning, TEXT(" Player Health decreased to: %f"), Health);
                 break;
             }
@@ -199,6 +217,56 @@ void ANXPlayerCharacter::OnCheckHit()
     //UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
 }
 
+float ANXPlayerCharacter::GetHealth() const
+{
+    return Health;
+}
+
+void ANXPlayerCharacter::AddHealth(float Amount)
+{
+    UpdateOverheadHP();
+    Health = FMath::Clamp(Health + Amount, 0.0f, MaxHealth);
+}
+
+void ANXPlayerCharacter::UpdateOverheadHP()
+{
+    if (!OverheadWidget) return;
+
+    if (!OverheadWidget)
+    {
+        return;
+    }
+
+    if (UUserWidget* WidgetInstance = OverheadWidget->GetUserWidgetObject())
+    {
+        if (UProgressBar* HPBar = Cast<UProgressBar>(WidgetInstance->GetWidgetFromName(TEXT("HealthBar"))))
+        {
+            const float HPPercent = (MaxHealth > 0.f) ? Health / MaxHealth : 0.f;
+            HPBar->SetPercent(HPPercent);
+
+            // HP가 낮을 때 색상 변경
+            if (HPPercent < 0.3f)
+            {
+                HPBar->SetFillColorAndOpacity(FLinearColor::Red);
+            }
+        }
+    }
+
+    UUserWidget* OverheadWidgetInstance = OverheadWidget->GetUserWidgetObject();
+    if (!OverheadWidgetInstance) return;
+
+    if (UTextBlock* HPText = Cast<UTextBlock>(OverheadWidgetInstance->GetWidgetFromName(TEXT("HpText"))))
+    {
+        HPText->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), Health, MaxHealth)));
+    }
+
+}
+
+
+
+  
+
+
 float ANXPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
     float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -208,6 +276,7 @@ float ANXPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
         DamageCalculation = 0;
     }
     Health = FMath::Clamp(Health - DamageCalculation, 0.0f, MaxHealth);
+    UpdateOverheadHP();
     UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
 
     if (Health <= 0.0f)
@@ -221,9 +290,11 @@ float ANXPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 
 void ANXPlayerCharacter::IsDead()
 {
+   
     Destroy();
     UE_LOG(LogTemp, Warning, TEXT("IsDead")); 
 }
+
 
 
 void ANXPlayerCharacter::FireWeapon()

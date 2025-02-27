@@ -4,11 +4,14 @@
 #include "Player/NXCharacterBase.h"
 #include "NXPlayerCharacter.generated.h"
 
+
 class AWeaponBase;
 class USpringArmComponent;
 class UCameraComponent;
 struct FInputActionValue;
 class UInputAction;
+class UWidgetComponent;
+
 
 UCLASS()
 class NXPROJECT_API ANXPlayerCharacter : public ANXCharacterBase
@@ -20,6 +23,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
 	bool bHasKey;
+	UFUNCTION(BlueprintCallable, Category = "Key")
+	void PickupKey();
 
 protected:
 
@@ -43,13 +48,26 @@ protected:
 	bool bIsDead;
 
 	void IsDead();
+
+	virtual float GetHealth() const override;
+	virtual void AddHealth(float Amount) override;
 	
-	//************카메라************
+	//************카메라,위젯************
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	USpringArmComponent* SpringArmComp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* CameraComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	UWidgetComponent* OverheadWidget;
+	void UpdateOverheadHP();
+
+	UUserWidget* CharacterHUDWidget;
+	
+	
+
+	
 
 	//************캐릭터무브먼트************
 

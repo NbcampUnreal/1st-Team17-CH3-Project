@@ -15,9 +15,9 @@ ANXCharacterBase::ANXCharacterBase()
 
 
 
-int ANXCharacterBase::GetHealth() const
+float ANXCharacterBase::GetHealth() const
 {
-	return 0;
+	return Health;
 }
 
 void ANXCharacterBase::AddHealth(float Amount)
