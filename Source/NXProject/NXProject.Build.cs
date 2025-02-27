@@ -20,7 +20,6 @@ public class NXProject : ModuleRules
 			"NavigationSystem",		//네비게이션 시스템 모듈
 			"GameplayTasks",		//비헤이비어 트리에서 블랙보드 값 갱신을 위한 모듈
 			"UMG"
-
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
