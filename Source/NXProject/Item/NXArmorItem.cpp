@@ -47,9 +47,8 @@ void ANXArmorItem::OnOverlap(
     if (Character)
     {
         
-        // Character->IncreaseArmor(ArmorValue, ArmorDuration);
-        // 방어력 증가 로직 추가 (Character 내부 함수가 필요)
-        //Charater.cpp 수정 후 주석 해제
+        Character->IncreaseArmor(ArmorValue, ArmorDuration);
+      
 
         if (GEngine)
         {

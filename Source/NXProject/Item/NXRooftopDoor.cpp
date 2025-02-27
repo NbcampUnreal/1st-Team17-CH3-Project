@@ -12,7 +12,7 @@ ANXRooftopDoor::ANXRooftopDoor()
     bIsOpen = false;
 
 
-    TargetOffset = FVector(2000.f, 0.f, 0.f);
+    TargetOffset = FVector(700.f, 0.f, 0.f);
 
 
     DoorTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("DoorTrigger"));

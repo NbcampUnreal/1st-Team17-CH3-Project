@@ -15,6 +15,7 @@
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
 #include "Blueprint/UserWidget.h"
+#include "Item/NXSpeedItem.h"
 
 
 
@@ -465,9 +466,78 @@ void ANXPlayerCharacter::InputAttack(const FInputActionValue & Invalue)
     }
 }
 
+///////////////////아이템과 연동//////////////////////
+
+
+void ANXPlayerCharacter::IncreaseSpeed(float BoostAmount, float Duration)
+{
+ 
+    float OriginalSpeed = GetCharacterMovement()->MaxWalkSpeed;
+
+
+    GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed + BoostAmount;
+
+    FTimerHandle TimerHandle;
+    GetWorld()->GetTimerManager().SetTimer(
+        TimerHandle,
+        [this, OriginalSpeed]()
+        {
+            GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;
+            UE_LOG(LogTemp, Warning, TEXT("Speed boost ended.."));
+        },
+        Duration,
+        false
+    );
+
+    UE_LOG(LogTemp, Warning, TEXT("Speed increased by %f for %f seconds."), BoostAmount, Duration);
+}
 
 
 
+void ANXPlayerCharacter::IncreaseArmor(float AdditionalArmor, float Duration)
+{
+
+    float OriginalDefense = Defense;
+
+    Defense += AdditionalArmor;
+
+    UE_LOG(LogTemp, Warning, TEXT("Armor increased by %f. New defense: %f"), AdditionalArmor, Defense);
+
+    FTimerHandle TimerHandle;
+    GetWorld()->GetTimerManager().SetTimer(
+        TimerHandle,
+        [this, OriginalDefense]()
+        {
+            Defense = OriginalDefense;
+            UE_LOG(LogTemp, Warning, TEXT("Armor boost ended. Defense restored to %f"), OriginalDefense);
+        },
+        Duration,
+        false
+    );
+}
+
+
+void ANXPlayerCharacter::IncreaseAttack(float BoostAmount, float Duration)
+{
+  
+    float OriginalStrength = Strength;
+
+
+    Strength += BoostAmount;
+    UE_LOG(LogTemp, Warning, TEXT("Attack increased by %f."), BoostAmount, Strength);
+
+    FTimerHandle TimerHandle;
+    GetWorld()->GetTimerManager().SetTimer(
+        TimerHandle,
+        [this, OriginalStrength]()
+        {
+            Strength = OriginalStrength;
+            UE_LOG(LogTemp, Warning, TEXT("Attack boost ended."), OriginalStrength);
+        },
+        Duration,
+        false
+    );
+}
 
 
 

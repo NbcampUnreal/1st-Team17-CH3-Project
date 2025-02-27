@@ -21,10 +21,21 @@ class NXPROJECT_API ANXPlayerCharacter : public ANXCharacterBase
 public:
 	ANXPlayerCharacter();
 
+	///////////æ∆¿Ã≈€/////////////
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
 	bool bHasKey;
 	UFUNCTION(BlueprintCallable, Category = "Key")
 	void PickupKey();
+
+	UFUNCTION(BlueprintCallable, Category = "Speed")
+	void IncreaseSpeed(float BoostAmount, float Duration);
+
+	UFUNCTION(BlueprintCallable, Category = "Armor")
+	void IncreaseArmor(float AdditionalArmor, float Duration);
+
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+	void IncreaseAttack(float AdditionalArmor, float Duration);
+
 
 protected:
 
@@ -127,7 +138,6 @@ protected:
 	void Interact(const FInputActionValue& value);
 	UFUNCTION()
 	void InputAttack(const FInputActionValue& Invalue);
-
 
 
 

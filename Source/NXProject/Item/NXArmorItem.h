@@ -4,7 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "NXArmorItem.generated.h"
 
-class UStaticMeshComonent;
+class UStaticMeshComponent;
 class USphereComponent;
 class ANXPlayerCharacter;
 

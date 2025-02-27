@@ -261,3 +261,22 @@ void ANXNonPlayerCharacter::UpdateAIHealtBar()
 		}
 	}
 }
+#include "GameFramework/CharacterMovementComponent.h"
+
+void ANXNonPlayerCharacter::FreezeMovement()
+{
+	if (GetCharacterMovement())
+	{
+
+		GetCharacterMovement()->DisableMovement();
+	}
+}
+
+void ANXNonPlayerCharacter::UnfreezeMovement()
+{
+	if (GetCharacterMovement())
+	{
+		
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	}
+}

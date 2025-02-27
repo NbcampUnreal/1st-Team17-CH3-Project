@@ -14,7 +14,7 @@ void ANXBulletItem::ActivateItem(AActor* Activator)
 	ANXPlayerCharacter* Player = Cast<ANXPlayerCharacter>(Activator);
 	if (Player)
 	{
-		//Player->RifillBullet(BulletAmount);
+		//Player->ReifillBullet(BulletAmount);
 		//Character.cpp 수정 후 주석 해제
 
 		if (GEngine)

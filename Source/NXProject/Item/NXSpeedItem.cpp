@@ -1,5 +1,5 @@
 
-#include "Item/NXSpeedItem.h"
+#include "NXSpeedItem.h"
 #include "Player/NXPlayerCharacter.h"
 #include "Engine/Engine.h"
 
@@ -15,8 +15,8 @@ void ANXSpeedItem::ActivateItem(AActor* Activator)
 	ANXPlayerCharacter* Player = Cast<ANXPlayerCharacter>(Activator);
 	if (Player)
 	{
-		//Player->IncreaseSpeed(SpeedBoostAmount, BoostDuration); 
-		//Character.cpp 수정후 주석 해제 에정
+		Player->IncreaseSpeed(SpeedBoostAmount, BoostDuration);
+		
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Cyan, TEXT("Speed Boost Activated!"));

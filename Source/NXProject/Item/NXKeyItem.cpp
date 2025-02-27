@@ -38,7 +38,7 @@ void ANXKeyItem::OnOverlap(
     ANXPlayerCharacter* Character = Cast<ANXPlayerCharacter>(OtherActor);
     if (Character)
     {
-       // Character->SetHasKey(true); 
+        Character->PickupKey();
        
         if (GEngine)
         {

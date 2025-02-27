@@ -10,7 +10,7 @@ ANXFlashItem::ANXFlashItem()
 {
     LightDuration = 5.0f;
     NonPlayerCharacterFreezeDuration = 3.0f;
-    bIsActive = false; // 기본적으로 꺼진 상태
+    bIsActive = false; 
 
     CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComponent"));
     RootComponent = CollisionComponent;
@@ -34,9 +34,9 @@ void ANXFlashItem::BeginPlay()
 void ANXFlashItem::ActivateItem(AActor* Activator)
 {
     ANXPlayerCharacter* Player = Cast<ANXPlayerCharacter>(Activator);
-   // if (!Player || !Player->bHasFlashlight || bIsActive) return;
 
-    bIsActive = true;  // 사용 중 상태 설정
+
+    bIsActive = true;  
     Flashlight->SetVisibility(true);
 
     if (GEngine)
@@ -55,7 +55,7 @@ void ANXFlashItem::ActivateItem(AActor* Activator)
         ANXNonPlayerCharacter* NPC = Cast<ANXNonPlayerCharacter>(Actor);
         if (NPC)
         {
-            //NPC->StopMovement();
+          
             FrozenNonPlayerCharacter.Add(NPC);
         }
     }
@@ -67,7 +67,7 @@ void ANXFlashItem::ActivateItem(AActor* Activator)
 void ANXFlashItem::DeactivateFlashlight()
 {
     Flashlight->SetVisibility(false);
-    bIsActive = false; // 손전등 꺼짐 상태
+    bIsActive = false; 
     if (GEngine)
     {
         GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Flashlight deactivated!"));
@@ -80,7 +80,6 @@ void ANXFlashItem::UnfreezeNonPlayerCharacter()
     {
         if (NPC)
         {
-            //NPC->StartMovement();
         }
     }
     FrozenNonPlayerCharacter.Empty();

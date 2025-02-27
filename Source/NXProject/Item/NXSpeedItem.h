@@ -16,6 +16,7 @@ public:
 
 protected:
 
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Item")
 	float SpeedBoostAmount;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
