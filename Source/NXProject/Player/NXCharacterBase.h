@@ -22,10 +22,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void AddHealth(float Amount);
 
-	UFUNCTION()
-	virtual void IsDead();
-
-	virtual void PlayDeadAnimation();
 
 
 protected:
@@ -40,6 +36,5 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
 	float Defense;		// ¹æ¾î·Â
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess))
-	TObjectPtr<UAnimMontage> DeadMontage;
+
 };
