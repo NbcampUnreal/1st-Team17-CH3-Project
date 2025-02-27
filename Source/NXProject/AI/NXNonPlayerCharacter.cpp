@@ -7,7 +7,9 @@
 #include "Engine/DamageEvents.h"
 #include "TimerManager.h"
 #include "Engine/World.h"
-
+#include "Components/WidgetComponent.h"
+#include "Components/TextBlock.h"
+#include "Components/ProgressBar.h"		//UProgressBar사용을 위한 추가
 
 
 ANXNonPlayerCharacter::ANXNonPlayerCharacter()
@@ -20,10 +22,19 @@ ANXNonPlayerCharacter::ANXNonPlayerCharacter()
 	//ANXNonPlayerCharacter는 레벨에 배치되거나 새롭게 생성되면 NXAIController의 빙의가 자동으로 진행됨.
 
 //----------스텟 초기화----------//
-	Defense = 10.f;
-	Strength = 15.f;
-	MaxHealth = 500.0f;
+	Defense = 0.f;
+	Strength = 0.f;
+	MaxHealth = 0.0f;
 //-------------------------------//
+
+	AINameplateWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("AINameplateWidget"));
+	AINameplateWidget->SetupAttachment(GetMesh());
+	AINameplateWidget->SetWidgetSpace(EWidgetSpace::World);
+
+	AIHealtBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("AIHealtBar"));
+	AIHealtBar->SetupAttachment(GetMesh());
+	AIHealtBar->SetWidgetSpace(EWidgetSpace::World);
+
 }
 
 void ANXNonPlayerCharacter::BeginPlay()
@@ -45,8 +56,10 @@ void ANXNonPlayerCharacter::BeginPlay()
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
-
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+
+		UpdateAINameplate();
+		UpdateAIHealtBar();
 	}
 }
 
@@ -183,5 +196,68 @@ float ANXNonPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& 
 		IsDead();
 	}
 
+	UpdateAIHealtBar();
 	return ActualDamage;
+}
+
+void ANXNonPlayerCharacter::UpdateAINameplate()
+{
+	if (!AINameplateWidget) return;
+
+	UUserWidget* AINameplateWidgetInstance = AINameplateWidget->GetUserWidgetObject();
+	if (!AINameplateWidgetInstance) return;
+
+	//FString Name = GetName();
+	FString Name;
+
+	if(MaxHealth > 500)
+	{
+		Name = (TEXT("aaa"));
+		Defense = 3.f;
+		Strength = 5.f;
+	}
+	else if (MaxHealth <= 300)
+	{
+		Name = (TEXT("bbb"));
+		Defense = 6.f;
+		Strength = 10.f;
+	}
+	else
+	{
+		Name = (TEXT("ccc"));
+		Defense = 9.f;
+		Strength = 15.f;
+	}
+
+	if (UTextBlock* NameText = Cast<UTextBlock>(AINameplateWidgetInstance->GetWidgetFromName(TEXT("AINameplate"))))
+	{
+		NameText->SetText(FText::FromString(Name));
+		//NameText->SetText(FText::FromString(FString::Printf(TEXT("%s"), *Name)));
+	}
+}
+
+void ANXNonPlayerCharacter::UpdateAIHealtBar()
+{
+	if (!AIHealtBar) return;
+
+	UUserWidget* AIHealtBarWidgetInstance = AIHealtBar->GetUserWidgetObject();
+	if (!AIHealtBarWidgetInstance) return;
+
+	if (UProgressBar* AIHPBar = Cast<UProgressBar>(AIHealtBarWidgetInstance->GetWidgetFromName(TEXT("AIHealtBar"))))
+	{
+
+		float HPPercent = 0.f;
+		if (MaxHealth > 0.f)
+		{
+			HPPercent = Health / MaxHealth;
+		}
+
+		AIHPBar->SetPercent(HPPercent);
+
+		if (HPPercent < 0.3f)
+		{
+			FLinearColor LowHPColor = FLinearColor::Red;
+			AIHPBar->SetFillColorAndOpacity(LowHPColor);
+		}
+	}
 }

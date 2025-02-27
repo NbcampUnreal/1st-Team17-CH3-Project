@@ -6,11 +6,11 @@
 #include "TimerManager.h"
 #include "NXNonPlayerCharacter.generated.h"
 
-
 DECLARE_DELEGATE_TwoParams(FOnAttackMontageEnded, UAnimMontage*, bool /*bInterrupted*/)
 DECLARE_DELEGATE_TwoParams(FOnDeadMontageEnded, UAnimMontage*, bool /*bInterrupted*/)
 
 class UAnimMontage;		// 공격 Task 구현
+class UWidgetComponent;		// 이름표
 
 UCLASS()
 class NXPROJECT_API ANXNonPlayerCharacter : public ANXCharacterBase
@@ -21,6 +21,11 @@ class NXPROJECT_API ANXNonPlayerCharacter : public ANXCharacterBase
 
 public:
 	ANXNonPlayerCharacter();		// 생성자
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	UWidgetComponent* AINameplateWidget;		//이름표
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	UWidgetComponent* AIHealtBar;		//체력바
 
 	virtual void BeginPlay() override;
 
@@ -35,6 +40,8 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	void UpdateAINameplate();
+	void UpdateAIHealtBar();
 
 protected:
 
@@ -49,7 +56,6 @@ protected:
 	virtual void BeginAttack();
 
 	virtual void EndAttack(UAnimMontage* InMontage, bool bInterruped);		// 공격 Task 구현
-
 
 //-------------------------------공격 Task 구현---------------------------------------//
 
