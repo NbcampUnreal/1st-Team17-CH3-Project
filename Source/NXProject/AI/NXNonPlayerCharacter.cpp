@@ -85,15 +85,46 @@ void ANXNonPlayerCharacter::OnCheckHit()
 
 void ANXNonPlayerCharacter::IsDead()
 {
-	Super::IsDead();
+	UKismetSystemLibrary::PrintString(this, TEXT("ISDead()"));
+	BeginDead();
+}
 
-	FTimerHandle DeadTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
-		[&]()
+void ANXNonPlayerCharacter::BeginDead()
+{
+	UNXAIAnimInstance* AnimInstance = Cast<UNXAIAnimInstance>(GetMesh()->GetAnimInstance());
+	checkf(IsValid(AnimInstance) == true, TEXT("Invalid AnimInstance"));
+
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	if (AnimInstance->Montage_IsPlaying(AttackMontage))
+	{
+		AnimInstance->Montage_Stop(0.2f, AttackMontage);
+		bIsNowAttacking = false;  // 공격 상태 해제
+	}
+	if (IsValid(AnimInstance) == true && IsValid(DeadMontage) == true && AnimInstance->Montage_IsPlaying(DeadMontage) == false)
+	{
+		AnimInstance->Montage_Play(DeadMontage);
+
+
+		if (OnDeadMontageEndedDelegate.IsBound() == false)
 		{
-			Destroy();
+			OnDeadMontageEndedDelegate.BindUObject(this, &ThisClass::EndDead);
+			AnimInstance->Montage_SetEndDelegate(OnDeadMontageEndedDelegate, DeadMontage);
 		}
-	), DeadEventDelayTime,false);
+	}
+}
+
+void ANXNonPlayerCharacter::EndDead(UAnimMontage* InMontage, bool bInterruped)
+{
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+
+	GetWorld()->GetTimerManager().ClearTimer(DeadTimerHandle);		// 타이머 해제
+
+	if (OnDeadMontageEndedDelegate.IsBound() == true)
+	{
+		OnDeadMontageEndedDelegate.Unbind();
+	}
+	Destroy();
 }
 
 void ANXNonPlayerCharacter::BeginAttack()
@@ -101,7 +132,10 @@ void ANXNonPlayerCharacter::BeginAttack()
 	UNXAIAnimInstance* AnimInstance = Cast<UNXAIAnimInstance>(GetMesh()->GetAnimInstance());
 	checkf(IsValid(AnimInstance) == true, TEXT("Invalid AnimInstance"));
 
-
+	if (Health <= KINDA_SMALL_NUMBER)
+	{
+		return;
+	}
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	if (IsValid(AnimInstance) == true && IsValid(AttackMontage) == true && AnimInstance->Montage_IsPlaying(AttackMontage) == false)
@@ -142,7 +176,7 @@ float ANXNonPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& 
 		DamageCalculation = 0;
 	}
 	Health = FMath::Clamp(Health - DamageCalculation, 0.0f, MaxHealth);
-	UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
+	UE_LOG(LogTemp, Warning, TEXT("Health wdecreased to: %f"), Health);
 
 	if (Health <= 0.0f)
 	{

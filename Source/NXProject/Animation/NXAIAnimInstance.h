@@ -6,7 +6,8 @@
 #include "Animation/AnimInstance.h"
 #include "NXAIAnimInstance.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCheckHit); // 델리게이트 자료형 정의
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCheckHit);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FIsDead);// 델리게이트 자료형 정의
 /**
  * 
  */
@@ -19,6 +20,7 @@ protected:
 	UFUNCTION()
 	void AnimNotify_CheckHit();
 
+	UFUNCTION()
 	void AnimNotify_IsDead();
 
 public:
@@ -35,5 +37,5 @@ public:
 	float Speed;
 
 	FOnCheckHit OnCheckHit; // 위에서 정의한 델리게이트 자료형을 통해 델리게이트 개체 선언.
-	FOnCheckHit IsDead;
+	FIsDead IsDead;
 };
