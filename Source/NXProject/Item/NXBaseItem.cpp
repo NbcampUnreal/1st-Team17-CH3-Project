@@ -1,5 +1,7 @@
 #include "NXBaseItem.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 ANXBaseItem::ANXBaseItem()
 {
@@ -51,6 +53,34 @@ void ANXBaseItem::OnItemEndOverlap(
 void ANXBaseItem::ActivateItem(AActor* Activator)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Overlap!!")));
+
+	UParticleSystemComponent* Particle = nullptr;
+
+	if (PickupParticle)
+	{
+		Particle = UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			PickupParticle,
+			GetActorLocation(),
+			GetActorRotation(),
+			true
+		);
+
+		if (Particle)
+		{
+			FTimerHandle DestroyParticleTimerHandle;
+
+			GetWorld()->GetTimerManager().SetTimer(
+				DestroyParticleTimerHandle,
+				[Particle]()
+				{
+					Particle->DestroyComponent();
+				},
+				2.0f,
+				false
+			);
+		}
+	}
 }
 
 FName ANXBaseItem::GetItemType() const

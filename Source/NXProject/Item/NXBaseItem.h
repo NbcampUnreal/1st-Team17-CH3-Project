@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "NXItemInterface.h"  
+#include "NiagaraSystem.h"         
+#include "NiagaraFunctionLibrary.h"
 #include "NXBaseItem.generated.h"
 
 class USphereComponent;
@@ -31,6 +33,9 @@ protected:
  
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
     UStaticMeshComponent* StaticMesh;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    UParticleSystem* PickupParticle; //¿Ã∆Â∆Æ
 
    
     UFUNCTION()
