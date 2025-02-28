@@ -1,6 +1,8 @@
 #include "NXBaseItem.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
 ANXBaseItem::ANXBaseItem()
@@ -52,35 +54,40 @@ void ANXBaseItem::OnItemEndOverlap(
 
 void ANXBaseItem::ActivateItem(AActor* Activator)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Overlap!!")));
+    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Overlap!!"));
 
-	UParticleSystemComponent* Particle = nullptr;
+    UNiagaraComponent* NiagaraComponent = nullptr;
 
-	if (PickupParticle)
-	{
-		Particle = UGameplayStatics::SpawnEmitterAtLocation(
-			GetWorld(),
-			PickupParticle,
-			GetActorLocation(),
-			GetActorRotation(),
-			true
-		);
 
-		if (Particle)
-		{
-			FTimerHandle DestroyParticleTimerHandle;
 
-			GetWorld()->GetTimerManager().SetTimer(
-				DestroyParticleTimerHandle,
-				[Particle]()
-				{
-					Particle->DestroyComponent();
-				},
-				2.0f,
-				false
-			);
-		}
-	}
+    if (PickupNiagara)
+    {
+        NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+            GetWorld(),
+            PickupNiagara,
+            GetActorLocation(),
+            GetActorRotation(),
+            FVector(1.0f),   
+            false,          
+            true,           
+            ENCPoolMethod::None
+        );
+    }
+
+ 
+    if (NiagaraComponent)
+    {
+        FTimerHandle DestroyNiagaraTimerHandle;
+        GetWorld()->GetTimerManager().SetTimer(
+            DestroyNiagaraTimerHandle,
+            [NiagaraComponent]()
+            {
+                NiagaraComponent->DestroyComponent();
+            },
+            2.0f,
+            false
+        );
+    }
 }
 
 FName ANXBaseItem::GetItemType() const

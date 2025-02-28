@@ -35,7 +35,7 @@ protected:
     UStaticMeshComponent* StaticMesh;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
-    UParticleSystem* PickupParticle; //¿Ã∆Â∆Æ
+    UNiagaraSystem* PickupNiagara; //¿Ã∆Â∆Æ
 
    
     UFUNCTION()
