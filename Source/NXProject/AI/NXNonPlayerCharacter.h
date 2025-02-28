@@ -27,6 +27,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	UWidgetComponent* AIHealtBar;		//Ã¼·Â¹Ù
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+	USoundBase* ZombieSound;
+
+
 	virtual void BeginPlay() override;
 
 	UFUNCTION()

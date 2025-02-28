@@ -37,6 +37,8 @@ ANXNonPlayerCharacter::ANXNonPlayerCharacter()
 
 }
 
+
+
 void ANXNonPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -75,6 +77,15 @@ void ANXNonPlayerCharacter::OnCheckHit()
 
 	if (bResult) // 충돌 감지에 성공하면
 	{
+		if (ZombieSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(
+				GetWorld(),
+				ZombieSound,
+				GetActorLocation()
+			);
+		}
+
 		ACharacter* PlayerCharacter = nullptr; // 첫 번째 감지된 플레이어 캐릭터 저장 변수
 
 		for (auto const& OverlapResult : OverlapResults) // 충돌 감지된 액터들을 순회
@@ -89,6 +100,8 @@ void ANXNonPlayerCharacter::OnCheckHit()
 			}
 		}
 	}
+
+
 
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
 	UKismetSystemLibrary::PrintString(this, TEXT("OnCheckHit()"));
@@ -228,7 +241,6 @@ void ANXNonPlayerCharacter::UpdateAINameplate()
 		Defense = 9.f;
 		Strength = 15.f;
 	}
-
 	if (UTextBlock* NameText = Cast<UTextBlock>(AINameplateWidgetInstance->GetWidgetFromName(TEXT("AINameplate"))))
 	{
 		NameText->SetText(FText::FromString(Name));
