@@ -32,10 +32,6 @@ ANXPlayerCharacter::ANXPlayerCharacter()
     CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
     CameraComp->bUsePawnControlRotation = false;
 
-    OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
-    OverheadWidget->SetupAttachment(GetMesh());
-    OverheadWidget->SetWidgetSpace(EWidgetSpace::Screen);
-
 
     NormalSpeed = 700.0f;
     SprintSpeedMultiplier = 1.7f;
@@ -44,8 +40,11 @@ ANXPlayerCharacter::ANXPlayerCharacter()
 
     GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
 
-    MaxHealth = 1000;
+    MaxHealth = 100;
     Strength = 15;
+    LevelDuration = 30.0f;
+    CurrentLevelIndex = 0;
+    MaxLevels = 4;
 
     Defense = 1;
     bIsSitting = false;
@@ -69,8 +68,22 @@ void ANXPlayerCharacter::PickupKey()
 void ANXPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
-
-   
+    
+    GetWorldTimerManager().SetTimer(
+        HUDUpdateTimerHandle,
+        this,
+        &ANXPlayerCharacter::UpdateHUD,
+        0.1f,
+        true
+    );
+    GetWorldTimerManager().SetTimer(
+        LevelTimerHandle,
+        this,
+        &ANXPlayerCharacter::OnLevelTimeUp,
+        LevelDuration,
+        false
+    );
+    UpdateHUD();
 
     UNXCharacterAnimInstance* AnimInstance = Cast<UNXCharacterAnimInstance>(GetMesh()->GetAnimInstance());
     if (IsValid(AnimInstance) == true)
@@ -225,47 +238,68 @@ float ANXPlayerCharacter::GetHealth() const
 
 void ANXPlayerCharacter::AddHealth(float Amount)
 {
-    UpdateOverheadHP();
+   
     Health = FMath::Clamp(Health + Amount, 0.0f, MaxHealth);
 }
 
-void ANXPlayerCharacter::UpdateOverheadHP()
+void ANXPlayerCharacter::UpdateHUD()
 {
-    if (!OverheadWidget) return;
+    if (!CharacterHUDWidget) return;
 
-    if (!OverheadWidget)
+    // CharacterHUDWidget에서 'OverHeadHP'라는 이름을 가진 UTextBlock을 찾기
+    if (UTextBlock* HPText = Cast<UTextBlock>(CharacterHUDWidget->GetWidgetFromName(TEXT("HPText"))))
     {
+        // Health와 MaxHealth를 텍스트로 변환하여 설정
+        HPText->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), Health, MaxHealth)));
+    }
+
+    if (UTextBlock* TimeText = Cast<UTextBlock>(CharacterHUDWidget->GetWidgetFromName(TEXT("Time"))))
+    {
+        float RemainingTime = GetWorldTimerManager().GetTimerRemaining(LevelTimerHandle);
+        TimeText->SetText(FText::FromString(FString::Printf(TEXT("Time: %.1f"), RemainingTime)));
+    }
+}
+
+void ANXPlayerCharacter::OnLevelTimeUp()
+{
+    EndLevel();
+}
+
+void ANXPlayerCharacter::EndLevel()
+{
+    GetWorldTimerManager().ClearTimer(LevelTimerHandle);
+    // 다음 레벨 인덱스로
+    CurrentLevelIndex++;
+
+    // 모든 레벨을 다 돌았다면 게임 오버 처리
+    if (CurrentLevelIndex >= MaxLevels)
+    {
+        OnGameOver();
         return;
     }
 
-    if (UUserWidget* WidgetInstance = OverheadWidget->GetUserWidgetObject())
+    else
     {
-        if (UProgressBar* HPBar = Cast<UProgressBar>(WidgetInstance->GetWidgetFromName(TEXT("HealthBar"))))
-        {
-            const float HPPercent = (MaxHealth > 0.f) ? Health / MaxHealth : 0.f;
-            HPBar->SetPercent(HPPercent);
-
-            // HP가 낮을 때 색상 변경
-            if (HPPercent < 0.3f)
-            {
-                HPBar->SetFillColorAndOpacity(FLinearColor::Red);
-            }
-        }
+        // 맵 이름이 없으면 게임오버
+        OnGameOver();
     }
-
-    UUserWidget* OverheadWidgetInstance = OverheadWidget->GetUserWidgetObject();
-    if (!OverheadWidgetInstance) return;
-
-    if (UTextBlock* HPText = Cast<UTextBlock>(OverheadWidgetInstance->GetWidgetFromName(TEXT("HpText"))))
-    {
-        HPText->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), Health, MaxHealth)));
-    }
+}
+void ANXPlayerCharacter::OnGameOver()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Game Over!!"));
+    IsDead();
+   
 
 }
 
 
 
-  
+
+void ANXPlayerCharacter::SetHUDWidget(UUserWidget* NewHUDWidget)
+{
+    CharacterHUDWidget = NewHUDWidget;
+}
+
 
 
 float ANXPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -277,7 +311,8 @@ float ANXPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
         DamageCalculation = 0;
     }
     Health = FMath::Clamp(Health - DamageCalculation, 0.0f, MaxHealth);
-    UpdateOverheadHP();
+    UpdateHUD();
+    //UpdateOverheadHP();
     UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
 
     if (Health <= 0.0f)
@@ -538,709 +573,3 @@ void ANXPlayerCharacter::IncreaseAttack(float BoostAmount, float Duration)
         false
     );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

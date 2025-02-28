@@ -1,6 +1,7 @@
 #include "Player/NXPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
+#include "Player/NXPlayerCharacter.h"
 
 ANXPlayerController::ANXPlayerController()
 	:InputMappingContext(nullptr),
@@ -43,6 +44,13 @@ void ANXPlayerController::BeginPlay()
         if (HUDWidget)
         {
             HUDWidget->AddToViewport();
+
+          
+            ANXPlayerCharacter* PlayerCharacter = Cast<ANXPlayerCharacter>(GetPawn());
+            if (PlayerCharacter)
+            {
+                PlayerCharacter->SetHUDWidget(HUDWidget);
+            }
         }
     }
 }

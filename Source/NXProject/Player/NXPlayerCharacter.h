@@ -36,6 +36,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void IncreaseAttack(float AdditionalArmor, float Duration);
 
+	void SetHUDWidget(UUserWidget* NewHUDWidget);
+
 
 protected:
 
@@ -70,14 +72,25 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* CameraComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
-	UWidgetComponent* OverheadWidget;
-	void UpdateOverheadHP();
 
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "UI")
 	UUserWidget* CharacterHUDWidget;
-	
-	
 
+	void UpdateHUD();
+
+	FTimerHandle HUDUpdateTimerHandle;
+	FTimerHandle LevelTimerHandle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Level")
+	float LevelDuration;
+
+	void OnLevelTimeUp();
+	void EndLevel();
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
+	int32 CurrentLevelIndex;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
+	int32 MaxLevels;
+	void OnGameOver();
 	
 
 	//************캐릭터무브먼트************
