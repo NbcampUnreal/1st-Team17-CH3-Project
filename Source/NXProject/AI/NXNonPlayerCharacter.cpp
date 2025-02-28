@@ -59,7 +59,7 @@ void ANXNonPlayerCharacter::BeginPlay()
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
-
+		
 		UpdateAINameplate();
 		UpdateAIHealtBar();
 	}
