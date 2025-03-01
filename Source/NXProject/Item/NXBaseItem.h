@@ -56,7 +56,7 @@ protected:
         int32 OtherBodyIndex
     ) override;
 
-    UFUNCTION()
+    UFUNCTION(BlueprintCallable, Category = "Item")
     virtual void ActivateItem(AActor* Activator) override;
 
     virtual FName GetItemType() const override;

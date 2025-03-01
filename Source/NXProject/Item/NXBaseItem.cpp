@@ -58,8 +58,6 @@ void ANXBaseItem::ActivateItem(AActor* Activator)
 
     UNiagaraComponent* NiagaraComponent = nullptr;
 
-
-
     if (PickupNiagara)
     {
         NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
