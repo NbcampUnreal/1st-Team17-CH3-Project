@@ -20,6 +20,9 @@ public:
 	
 	AWeaponBase();
 
+    // ¹«±â ¸ðµ¨À» À§ÇÑ ½ºÄÌ·¹Å» ¸Þ½Ã ÄÄÆ÷³ÍÆ®
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+    USkeletalMeshComponent* WeaponMesh;
 	
 	virtual void BeginPlay() override;
 

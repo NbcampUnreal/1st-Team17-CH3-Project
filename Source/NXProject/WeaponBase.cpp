@@ -16,6 +16,9 @@ AWeaponBase::AWeaponBase()
     CurrentAmmo = MaxAmmo;
     bIsReloading = false;
 
+    WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
+    RootComponent = WeaponMesh;
+
 }
 
 

@@ -11,7 +11,8 @@ ANXPlayerController::ANXPlayerController()
     SprintAction(nullptr),
     InteractAction(nullptr),
     CrouchAction(nullptr),
-    UnCrouchAction(nullptr)
+    UnCrouchAction(nullptr),
+    FireAction(nullptr)
     
 {
 

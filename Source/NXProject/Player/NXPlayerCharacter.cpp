@@ -13,7 +13,6 @@
 #include "Engine/DamageEvents.h"
 #include "Components/WidgetComponent.h"
 #include "Components/TextBlock.h"
-#include "Components/ProgressBar.h"
 #include "Blueprint/UserWidget.h"
 #include "Item/NXSpeedItem.h"
 
@@ -68,6 +67,17 @@ void ANXPlayerCharacter::PickupKey()
 void ANXPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    // 총기 객체 생성
+    if (CurrentWeapon)
+    {
+        // 무기를 손에 맞는 위치에 부착
+        if (USkeletalMeshComponent* MeshComp = GetMesh())
+        {
+            // "WeaponSocket"은 스켈레톤에 미리 설정된 소켓 이름
+            CurrentWeapon->AttachToComponent(MeshComp, FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
+        }
+    }
     
     GetWorldTimerManager().SetTimer(
         HUDUpdateTimerHandle,
@@ -102,10 +112,11 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInput
     {
         //공격(Attack) 바인딩?
         EnhancedInput->BindAction(AttackAction, ETriggerEvent::Started, this, &ThisClass::InputAttack);
-
+        
 
         if (ANXPlayerController* PlayerController = Cast<ANXPlayerController>(GetController()))
         {
+            
             if (PlayerController->MoveAction)
             {
                 EnhancedInput->BindAction(
@@ -192,6 +203,15 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInput
                     &ANXPlayerCharacter::EndCrouch
                 );
             }
+            if (PlayerController->FireAction)
+            {
+                EnhancedInput->BindAction(
+                    PlayerController->FireAction,
+                    ETriggerEvent::Triggered,
+                    this,
+                    &ANXPlayerCharacter::OnFirePressed
+                );
+            }
 
 
 
@@ -256,7 +276,7 @@ void ANXPlayerCharacter::UpdateHUD()
     if (UTextBlock* TimeText = Cast<UTextBlock>(CharacterHUDWidget->GetWidgetFromName(TEXT("Time"))))
     {
         float RemainingTime = GetWorldTimerManager().GetTimerRemaining(LevelTimerHandle);
-        TimeText->SetText(FText::FromString(FString::Printf(TEXT("Time: %.1f"), RemainingTime)));
+        TimeText->SetText(FText::FromString(FString::Printf(TEXT("Time: %.0f"), RemainingTime)));
     }
 }
 

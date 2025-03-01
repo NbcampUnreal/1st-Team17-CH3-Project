@@ -118,6 +118,14 @@ protected:
 	// 무기 소지 여부
 	bool bIsReloading;
 
+	// 총기 컴포넌트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	AWeaponBase* CurrentWeapon;
+
+	// 총을 장착할 위치 소켓 이름
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	FName WeaponSocketName = "WeaponSocket";  // 스켈레톤에 설정된 소켓 이름
+
 	
 	
 

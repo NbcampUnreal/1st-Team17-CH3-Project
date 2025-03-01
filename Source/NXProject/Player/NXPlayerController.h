@@ -34,7 +34,8 @@ public:
 	UInputAction* CrouchAction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UInputAction* UnCrouchAction;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UInputAction* FireAction;
 
 public:
 	//À§Á¬
