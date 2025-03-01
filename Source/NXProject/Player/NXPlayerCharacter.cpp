@@ -520,13 +520,14 @@ void ANXPlayerCharacter::InputFire(const FInputActionValue& Invalue)
 {
     if (GetCharacterMovement()->IsFalling() == true)
     {
-
+        
         return;
     }
 
     UNXCharacterAnimInstance* AnimInstance = Cast<UNXCharacterAnimInstance>(GetMesh()->GetAnimInstance());
     if (IsValid(AnimInstance) == true && IsValid(FireMontage) == true && AnimInstance->Montage_IsPlaying(FireMontage) == false)
     {
+        OnFirePressed();
         AnimInstance->Montage_Play(FireMontage);
     }
 }
@@ -542,6 +543,7 @@ void ANXPlayerCharacter::InputReload(const FInputActionValue& Invalue)
     UNXCharacterAnimInstance* AnimInstance = Cast<UNXCharacterAnimInstance>(GetMesh()->GetAnimInstance());
     if (IsValid(AnimInstance) == true && IsValid(ReloadMontage) == true && AnimInstance->Montage_IsPlaying(ReloadMontage) == false)
     {
+        OnReloadPressed();
         AnimInstance->Montage_Play(ReloadMontage);
     }
 }
