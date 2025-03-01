@@ -67,16 +67,28 @@ void ANXNonPlayerCharacter::BeginPlay()
 
 void ANXNonPlayerCharacter::OnCheckHit()
 {
-	TArray<FOverlapResult> OverlapResults; // 충돌 감지 후 감지된 액터들을 담아 놓을 배열
-	FCollisionQueryParams CollisionQueryParams(NAME_None, false, this); // 충돌 감지에 필요한 변수 선언
-	bool bResult = GetWorld()->OverlapMultiByChannel(
-		OverlapResults, GetActorLocation(), FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel2,
-		FCollisionShape::MakeSphere(300.f), CollisionQueryParams
-	); // 충돌 감지 함수 호출
+	TArray<FOverlapResult> OverlapResults; // 충돌 감지 결과를 저장할 배열
+	FCollisionQueryParams CollisionQueryParams(NAME_None, false, this); // 충돌 쿼리 파라미터 설정
 
-	if (bResult) // 충돌 감지에 성공하면
+	// 다른 AI를 무시하도록 설정
+	TArray<AActor*> OtherAIs;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANXNonPlayerCharacter::StaticClass(), OtherAIs); // 모든 AI 액터 가져오기
+	CollisionQueryParams.AddIgnoredActors(OtherAIs); // 다른 AI들을 충돌 감지에서 제외
+
+	// 구체 형태로 충돌 감지 수행 (ECC_GameTraceChannel2는 플레이어 전용 채널로 가정)
+	bool bResult = GetWorld()->OverlapMultiByChannel(
+		OverlapResults,
+		GetActorLocation(),
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel2, // 플레이어 전용 채널 사용
+		FCollisionShape::MakeSphere(300.f),
+		CollisionQueryParams
+	);
+
+	// 충돌 감지에 성공한 경우
+	if (bResult)
 	{
+		// 좀비 사운드 재생
 		if (ZombieSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(
@@ -86,27 +98,28 @@ void ANXNonPlayerCharacter::OnCheckHit()
 			);
 		}
 
-		ACharacter* PlayerCharacter = nullptr; // 첫 번째 감지된 플레이어 캐릭터 저장 변수
-
-		for (auto const& OverlapResult : OverlapResults) // 충돌 감지된 액터들을 순회
+		// 충돌 감지된 모든 액터 순회
+		for (auto const& OverlapResult : OverlapResults)
 		{
-			PlayerCharacter = Cast<ACharacter>(OverlapResult.GetActor());
-			if (IsValid(PlayerCharacter)) // 플레이어 캐릭터가 유효하면
+			// 충돌한 액터가 플레이어 캐릭터인지 확인
+			ACharacter* PlayerCharacter = Cast<ACharacter>(OverlapResult.GetActor());
+			if (IsValid(PlayerCharacter))
 			{
-				// 첫 번째 플레이어만 공격 후 반복문 종료
-				PlayerCharacter->TakeDamage(Strength, FDamageEvent(), GetController(), this);
-				//UE_LOG(LogTemp, Warning, TEXT(" Player Health decreased to: %f"), Health);
-				break;
+				// 플레이어 컨트롤러인지 추가로 확인
+				APlayerController* PlayerController = Cast<APlayerController>(PlayerCharacter->GetController());
+				if (IsValid(PlayerController))
+				{
+					// 플레이어에게 데미지 적용
+					PlayerCharacter->TakeDamage(Strength, FDamageEvent(), GetController(), this);
+					break; // 첫 번째 플레이어만 공격 후 종료
+				}
 			}
 		}
 	}
 
-
-
+	// 디버그용 구체 및 메시지 출력
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
 	UKismetSystemLibrary::PrintString(this, TEXT("OnCheckHit()"));
-
-	//UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
 }
 
 void ANXNonPlayerCharacter::IsDead()
