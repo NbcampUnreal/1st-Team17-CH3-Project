@@ -20,11 +20,11 @@ public:
 	
 	AWeaponBase();
 
-    // 무기 모델을 위한 스켈레탈 메시 컴포넌트
+	virtual void BeginPlay() override;
+
+    // 총의 스켈레탈 메시 컴포넌트
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
     USkeletalMeshComponent* WeaponMesh;
-	
-	virtual void BeginPlay() override;
 
     // 무기의 기본 속성
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Stats")

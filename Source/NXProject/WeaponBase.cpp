@@ -17,13 +17,15 @@ AWeaponBase::AWeaponBase()
     bIsReloading = false;
 
     WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
-    RootComponent = WeaponMesh;
+    RootComponent = WeaponMesh;  // WeaponMesh를 루트 컴포넌트로 설정
+    
 
 }
 
 
 void AWeaponBase::BeginPlay()
 {
+   
 	Super::BeginPlay();
 	
 }

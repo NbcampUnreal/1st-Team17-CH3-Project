@@ -38,6 +38,9 @@ ANXPlayerCharacter::ANXPlayerCharacter()
 
 
     GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
+    
+   
+    bIsReloading = false; 
 
     MaxHealth = 100;
     Strength = 15;
@@ -48,7 +51,6 @@ ANXPlayerCharacter::ANXPlayerCharacter()
     Defense = 1;
     bIsSitting = false;
     bIsDead = false;
-    bIsReloading = false;
     bHasKey = false;
    
    
@@ -68,17 +70,15 @@ void ANXPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
-    // 총기 객체 생성
-    if (CurrentWeapon)
-    {
-        // 무기를 손에 맞는 위치에 부착
-        if (USkeletalMeshComponent* MeshComp = GetMesh())
-        {
-            // "WeaponSocket"은 스켈레톤에 미리 설정된 소켓 이름
-            CurrentWeapon->AttachToComponent(MeshComp, FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
-        }
-    }
+    MaxHealth = Health;
+
     
+   
+    CurrentWeapon = GetWorld()->SpawnActor<AWeaponBase>(Weaponclass);
+   
+
+    CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FName(TEXT("hand_rSocket")));
+
     GetWorldTimerManager().SetTimer(
         HUDUpdateTimerHandle,
         this,
@@ -112,7 +112,8 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInput
     {
         //공격(Attack) 바인딩?
         EnhancedInput->BindAction(AttackAction, ETriggerEvent::Started, this, &ThisClass::InputAttack);
-        
+        EnhancedInput->BindAction(FireAction, ETriggerEvent::Started, this, &ThisClass::InputFire);
+        EnhancedInput->BindAction(ReloadAction, ETriggerEvent::Started, this, &ThisClass::InputReload);
 
         if (ANXPlayerController* PlayerController = Cast<ANXPlayerController>(GetController()))
         {
@@ -203,15 +204,7 @@ void ANXPlayerCharacter::SetupPlayerInputComponent(UInputComponent * PlayerInput
                     &ANXPlayerCharacter::EndCrouch
                 );
             }
-            if (PlayerController->FireAction)
-            {
-                EnhancedInput->BindAction(
-                    PlayerController->FireAction,
-                    ETriggerEvent::Triggered,
-                    this,
-                    &ANXPlayerCharacter::OnFirePressed
-                );
-            }
+            
 
 
 
@@ -355,18 +348,20 @@ void ANXPlayerCharacter::IsDead()
 
 void ANXPlayerCharacter::FireWeapon()
 {
-    if (EquippedWeapon && !bIsReloading)
+    if (CurrentWeapon && !bIsReloading)
     {
-        EquippedWeapon->Fire();
+        
+        CurrentWeapon->Fire();
     }
 }
 
 void ANXPlayerCharacter::ReloadWeapon()
 {
-    if (EquippedWeapon && !bIsReloading)
+    if (CurrentWeapon && !bIsReloading)
     {
-        bIsReloading = true;
-        EquippedWeapon->Reload();
+        //bIsReloading = true;
+        
+        CurrentWeapon->Reload();
     }
 }
 
@@ -518,6 +513,36 @@ void ANXPlayerCharacter::InputAttack(const FInputActionValue & Invalue)
     if (IsValid(AnimInstance) == true && IsValid(AttackMontage) == true && AnimInstance->Montage_IsPlaying(AttackMontage) == false)
     {
         AnimInstance->Montage_Play(AttackMontage);
+    }
+}
+
+void ANXPlayerCharacter::InputFire(const FInputActionValue& Invalue)
+{
+    if (GetCharacterMovement()->IsFalling() == true)
+    {
+
+        return;
+    }
+
+    UNXCharacterAnimInstance* AnimInstance = Cast<UNXCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+    if (IsValid(AnimInstance) == true && IsValid(FireMontage) == true && AnimInstance->Montage_IsPlaying(FireMontage) == false)
+    {
+        AnimInstance->Montage_Play(FireMontage);
+    }
+}
+
+void ANXPlayerCharacter::InputReload(const FInputActionValue& Invalue)
+{
+    if (GetCharacterMovement()->IsFalling() == true)
+    {
+
+        return;
+    }
+
+    UNXCharacterAnimInstance* AnimInstance = Cast<UNXCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+    if (IsValid(AnimInstance) == true && IsValid(ReloadMontage) == true && AnimInstance->Montage_IsPlaying(ReloadMontage) == false)
+    {
+        AnimInstance->Montage_Play(ReloadMontage);
     }
 }
 

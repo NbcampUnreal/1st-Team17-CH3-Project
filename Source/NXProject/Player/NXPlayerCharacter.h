@@ -49,9 +49,17 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* AttackAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* FireAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ReloadAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* AttackMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* FireMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* ReloadMontage;
 
 	UFUNCTION()
 	void OnCheckHit();
@@ -105,8 +113,6 @@ protected:
 
 	//************무기************
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	AWeaponBase* EquippedWeapon; // 소지한 무기
 
 	// 발사, 재장전 함수
 	void FireWeapon();
@@ -121,13 +127,8 @@ protected:
 	// 총기 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 	AWeaponBase* CurrentWeapon;
-
-	// 총을 장착할 위치 소켓 이름
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
-	FName WeaponSocketName = "WeaponSocket";  // 스켈레톤에 설정된 소켓 이름
-
-	
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category= "Weapon")
+	TSubclassOf<AWeaponBase> Weaponclass;
 
 	//************앉기************
 
@@ -159,7 +160,10 @@ protected:
 	void Interact(const FInputActionValue& value);
 	UFUNCTION()
 	void InputAttack(const FInputActionValue& Invalue);
-
+	UFUNCTION()
+	void InputFire(const FInputActionValue& Invalue);
+	UFUNCTION()
+	void InputReload(const FInputActionValue& Invalue);
 
 
 	
