@@ -269,7 +269,7 @@ void ANXNonPlayerCharacter::UpdateAINameplate()
 		Name = (TEXT("ccc"));
 		Defense = 9.f;
 		Strength = 15.f;
-		GetCharacterMovement()->MaxWalkSpeed = 1000.f;
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	}
 	if (UTextBlock* NameText = Cast<UTextBlock>(AINameplateWidgetInstance->GetWidgetFromName(TEXT("AINameplate"))))
 	{

@@ -34,9 +34,7 @@ public:
     EFireMode FireMode;  // 발사 방식 (히트스캔, 물리탄환)
 
 
-    //발사될 총알 클래스
-    UPROPERTY(EditAnywhere,BlueprintReadWrite, Category= "Weapon")
-    TSubclassOf<class ANXProjectile> ProjectileClass;
+    
 
     UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
     float FireRate;

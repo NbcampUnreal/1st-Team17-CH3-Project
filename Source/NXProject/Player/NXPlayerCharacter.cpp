@@ -44,7 +44,7 @@ ANXPlayerCharacter::ANXPlayerCharacter()
 
     MaxHealth = 100;
     Strength = 15;
-    LevelDuration = 30.0f;
+    LevelDuration = 30000.0f;
     CurrentLevelIndex = 0;
     MaxLevels = 4;
 
