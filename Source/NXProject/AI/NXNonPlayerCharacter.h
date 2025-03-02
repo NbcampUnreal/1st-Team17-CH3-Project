@@ -30,6 +30,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
 	USoundBase* ZombieSound;
 
+	////////////손전등 아이템////////////
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void FreezeMovement();
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void UnfreezeMovement();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+	bool bIsFrozen;
+
 
 	virtual void BeginPlay() override;
 
@@ -76,13 +86,6 @@ protected:
 	// 애니메이션 몽타주 재생이 끝났을 때 호출할 델리게이트.
 
 //-------------------------------------------------------------------------------------//
-
-	////////////손전등 아이템////////////
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	void FreezeMovement();
-
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	void UnfreezeMovement();
 
 };
 

@@ -1,5 +1,9 @@
 #include "Item/NXSmallHealItem.h"
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Engine/Engine.h"
+#include "Player/NXPlayerCharacter.h"
+#include "TimerManager.h"
 
 ANXSmallHealItem::ANXSmallHealItem()
 {
@@ -9,9 +13,25 @@ ANXSmallHealItem::ANXSmallHealItem()
 
 void ANXSmallHealItem::ActivateItem(AActor* Activator)
 {
-    Super::ActivateItem(Activator);
 
-    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Overlap!!"));
+    ANXPlayerCharacter* Character = Cast<ANXPlayerCharacter>(Activator);
+    if (Character)
+    {
+
+        Character->AddHealth(HealAmount);
+
+
+        if (GEngine)
+        {
+            GEngine->AddOnScreenDebugMessage(
+                -1,
+                2.0f,
+                FColor::Green,
+                TEXT("Healed!")
+            );
+        }
+    }
+
 
     UNiagaraComponent* NiagaraComponent = nullptr;
 
@@ -43,4 +63,5 @@ void ANXSmallHealItem::ActivateItem(AActor* Activator)
             false
         );
     }
+    Destroy();
 }

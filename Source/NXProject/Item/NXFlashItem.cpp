@@ -14,7 +14,7 @@ ANXFlashItem::ANXFlashItem()
 
     CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComponent"));
     RootComponent = CollisionComponent;
-    CollisionComponent->SetSphereRadius(50.0f);
+    CollisionComponent->SetSphereRadius(500.0f);
     CollisionComponent->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 
     Flashlight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Flashlight"));
@@ -55,7 +55,7 @@ void ANXFlashItem::ActivateItem(AActor* Activator)
         ANXNonPlayerCharacter* NPC = Cast<ANXNonPlayerCharacter>(Actor);
         if (NPC)
         {
-          
+            NPC->FreezeMovement();
             FrozenNonPlayerCharacter.Add(NPC);
         }
     }
@@ -73,13 +73,13 @@ void ANXFlashItem::DeactivateFlashlight()
         GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Flashlight deactivated!"));
     }
 }
-
 void ANXFlashItem::UnfreezeNonPlayerCharacter()
 {
     for (ANXNonPlayerCharacter* NPC : FrozenNonPlayerCharacter)
     {
         if (NPC)
         {
+            NPC->UnfreezeMovement();
         }
     }
     FrozenNonPlayerCharacter.Empty();

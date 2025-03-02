@@ -249,10 +249,12 @@ float ANXPlayerCharacter::GetHealth() const
     return Health;
 }
 
+
 void ANXPlayerCharacter::AddHealth(float Amount)
 {
    
     Health = FMath::Clamp(Health + Amount, 0.0f, MaxHealth);
+    UpdateHUD();
 }
 
 void ANXPlayerCharacter::UpdateHUD()

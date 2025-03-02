@@ -38,6 +38,9 @@ public:
 
 	void SetHUDWidget(UUserWidget* NewHUDWidget);
 
+	virtual float GetHealth() const override;
+
+	virtual void AddHealth(float Amount) override;
 
 protected:
 
@@ -69,9 +72,6 @@ protected:
 	bool bIsDead;
 
 	void IsDead();
-
-	virtual float GetHealth() const override;
-	virtual void AddHealth(float Amount) override;
 	
 	//************Ä«¸Þ¶ó,À§Á¬************
 
