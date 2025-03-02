@@ -1,4 +1,4 @@
-#include "AI/NXNonPlayerCharacter.h"
+ï»¿#include "AI/NXNonPlayerCharacter.h"
 #include "AI/NXAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Actor.h"
@@ -9,7 +9,7 @@
 #include "Engine/World.h"
 #include "Components/WidgetComponent.h"
 #include "Components/TextBlock.h"
-#include "Components/ProgressBar.h"		//UProgressBar»ç¿ëÀ» À§ÇÑ Ãß°¡
+#include "Components/ProgressBar.h"		//UProgressBarì‚¬ìš©ì„ ìœ„í•œ ì¶”ê°€
 
 
 ANXNonPlayerCharacter::ANXNonPlayerCharacter()
@@ -19,9 +19,9 @@ ANXNonPlayerCharacter::ANXNonPlayerCharacter()
 
 	AIControllerClass = ANXAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-	//ANXNonPlayerCharacter´Â ·¹º§¿¡ ¹èÄ¡µÇ°Å³ª »õ·Ó°Ô »ı¼ºµÇ¸é NXAIControllerÀÇ ºùÀÇ°¡ ÀÚµ¿À¸·Î ÁøÇàµÊ.
+	//ANXNonPlayerCharacterëŠ” ë ˆë²¨ì— ë°°ì¹˜ë˜ê±°ë‚˜ ìƒˆë¡­ê²Œ ìƒì„±ë˜ë©´ NXAIControllerì˜ ë¹™ì˜ê°€ ìë™ìœ¼ë¡œ ì§„í–‰ë¨.
 
-//----------½ºÅİ ÃÊ±âÈ­----------//
+//----------ìŠ¤í…Ÿ ì´ˆê¸°í™”----------//
 	Defense = 0.f;
 	Strength = 0.f;
 	MaxHealth = 0.0f;
@@ -67,28 +67,28 @@ void ANXNonPlayerCharacter::BeginPlay()
 
 void ANXNonPlayerCharacter::OnCheckHit()
 {
-	TArray<FOverlapResult> OverlapResults; // Ãæµ¹ °¨Áö °á°ú¸¦ ÀúÀåÇÒ ¹è¿­
-	FCollisionQueryParams CollisionQueryParams(NAME_None, false, this); // Ãæµ¹ Äõ¸® ÆÄ¶ó¹ÌÅÍ ¼³Á¤
+	TArray<FOverlapResult> OverlapResults; // ì¶©ëŒ ê°ì§€ ê²°ê³¼ë¥¼ ì €ì¥í•  ë°°ì—´
+	FCollisionQueryParams CollisionQueryParams(NAME_None, false, this); // ì¶©ëŒ ì¿¼ë¦¬ íŒŒë¼ë¯¸í„° ì„¤ì •
 
-	// ´Ù¸¥ AI¸¦ ¹«½ÃÇÏµµ·Ï ¼³Á¤
+	// ë‹¤ë¥¸ AIë¥¼ ë¬´ì‹œí•˜ë„ë¡ ì„¤ì •
 	TArray<AActor*> OtherAIs;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANXNonPlayerCharacter::StaticClass(), OtherAIs); // ¸ğµç AI ¾×ÅÍ °¡Á®¿À±â
-	CollisionQueryParams.AddIgnoredActors(OtherAIs); // ´Ù¸¥ AIµéÀ» Ãæµ¹ °¨Áö¿¡¼­ Á¦¿Ü
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANXNonPlayerCharacter::StaticClass(), OtherAIs); // ëª¨ë“  AI ì•¡í„° ê°€ì ¸ì˜¤ê¸°
+	CollisionQueryParams.AddIgnoredActors(OtherAIs); // ë‹¤ë¥¸ AIë“¤ì„ ì¶©ëŒ ê°ì§€ì—ì„œ ì œì™¸
 
-	// ±¸Ã¼ ÇüÅÂ·Î Ãæµ¹ °¨Áö ¼öÇà (ECC_GameTraceChannel2´Â ÇÃ·¹ÀÌ¾î Àü¿ë Ã¤³Î·Î °¡Á¤)
+	// êµ¬ì²´ í˜•íƒœë¡œ ì¶©ëŒ ê°ì§€ ìˆ˜í–‰ (ECC_GameTraceChannel2ëŠ” í”Œë ˆì´ì–´ ì „ìš© ì±„ë„ë¡œ ê°€ì •)
 	bool bResult = GetWorld()->OverlapMultiByChannel(
 		OverlapResults,
 		GetActorLocation(),
 		FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel2, // ÇÃ·¹ÀÌ¾î Àü¿ë Ã¤³Î »ç¿ë
+		ECollisionChannel::ECC_GameTraceChannel2, // í”Œë ˆì´ì–´ ì „ìš© ì±„ë„ ì‚¬ìš©
 		FCollisionShape::MakeSphere(300.f),
 		CollisionQueryParams
 	);
 
-	// Ãæµ¹ °¨Áö¿¡ ¼º°øÇÑ °æ¿ì
+	// ì¶©ëŒ ê°ì§€ì— ì„±ê³µí•œ ê²½ìš°
 	if (bResult)
 	{
-		// Á»ºñ »ç¿îµå Àç»ı
+		// ì¢€ë¹„ ì‚¬ìš´ë“œ ì¬ìƒ
 		if (ZombieSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(
@@ -98,26 +98,26 @@ void ANXNonPlayerCharacter::OnCheckHit()
 			);
 		}
 
-		// Ãæµ¹ °¨ÁöµÈ ¸ğµç ¾×ÅÍ ¼øÈ¸
+		// ì¶©ëŒ ê°ì§€ëœ ëª¨ë“  ì•¡í„° ìˆœíšŒ
 		for (auto const& OverlapResult : OverlapResults)
 		{
-			// Ãæµ¹ÇÑ ¾×ÅÍ°¡ ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍÀÎÁö È®ÀÎ
+			// ì¶©ëŒí•œ ì•¡í„°ê°€ í”Œë ˆì´ì–´ ìºë¦­í„°ì¸ì§€ í™•ì¸
 			ACharacter* PlayerCharacter = Cast<ACharacter>(OverlapResult.GetActor());
 			if (IsValid(PlayerCharacter))
 			{
-				// ÇÃ·¹ÀÌ¾î ÄÁÆ®·Ñ·¯ÀÎÁö Ãß°¡·Î È®ÀÎ
+				// í”Œë ˆì´ì–´ ì»¨íŠ¸ë¡¤ëŸ¬ì¸ì§€ ì¶”ê°€ë¡œ í™•ì¸
 				APlayerController* PlayerController = Cast<APlayerController>(PlayerCharacter->GetController());
 				if (IsValid(PlayerController))
 				{
-					// ÇÃ·¹ÀÌ¾î¿¡°Ô µ¥¹ÌÁö Àû¿ë
+					// í”Œë ˆì´ì–´ì—ê²Œ ë°ë¯¸ì§€ ì ìš©
 					PlayerCharacter->TakeDamage(Strength, FDamageEvent(), GetController(), this);
-					break; // Ã¹ ¹øÂ° ÇÃ·¹ÀÌ¾î¸¸ °ø°İ ÈÄ Á¾·á
+					break; // ì²« ë²ˆì§¸ í”Œë ˆì´ì–´ë§Œ ê³µê²© í›„ ì¢…ë£Œ
 				}
 			}
 		}
 	}
 
-	// µğ¹ö±×¿ë ±¸Ã¼ ¹× ¸Ş½ÃÁö Ãâ·Â
+	// ë””ë²„ê·¸ìš© êµ¬ì²´ ë° ë©”ì‹œì§€ ì¶œë ¥
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
 	UKismetSystemLibrary::PrintString(this, TEXT("OnCheckHit()"));
 }
@@ -127,43 +127,56 @@ void ANXNonPlayerCharacter::IsDead()
 	UKismetSystemLibrary::PrintString(this, TEXT("ISDead()"));
 	BeginDead();
 }
-
 void ANXNonPlayerCharacter::BeginDead()
 {
 	UNXAIAnimInstance* AnimInstance = Cast<UNXAIAnimInstance>(GetMesh()->GetAnimInstance());
-	checkf(IsValid(AnimInstance) == true, TEXT("Invalid AnimInstance"));
+	checkf(IsValid(AnimInstance), TEXT("Invalid AnimInstance"));
 
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	GetCharacterMovement()->GravityScale = 0.0f;
+
 	if (AnimInstance->Montage_IsPlaying(AttackMontage))
 	{
-		AnimInstance->Montage_Stop(0.2f, AttackMontage);
-		bIsNowAttacking = false;  // °ø°İ »óÅÂ ÇØÁ¦
+		AnimInstance->Montage_Stop(0.0f, AttackMontage);
+		bIsNowAttacking = false;
 	}
-	if (IsValid(AnimInstance) == true && IsValid(DeadMontage) == true && AnimInstance->Montage_IsPlaying(DeadMontage) == false)
+
+	if (IsValid(AnimInstance) && IsValid(DeadMontage) && !AnimInstance->Montage_IsPlaying(DeadMontage))
 	{
-		AnimInstance->Montage_Play(DeadMontage);
+		AnimInstance->Montage_Play(DeadMontage, 0.8f);
 
-
-		if (OnDeadMontageEndedDelegate.IsBound() == false)
+		if (!OnDeadMontageEndedDelegate.IsBound())
 		{
-			OnDeadMontageEndedDelegate.BindUObject(this, &ThisClass::EndDead);
+			OnDeadMontageEndedDelegate.BindUObject(this, &ANXNonPlayerCharacter::EndDead);
 			AnimInstance->Montage_SetEndDelegate(OnDeadMontageEndedDelegate, DeadMontage);
 		}
 	}
+
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+
+	if (GetWorld())
+	{
+		float DeadTime = 3.0f;
+		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &ANXNonPlayerCharacter::EndDead_Timer, DeadTime, false);
+	}
 }
 
-void ANXNonPlayerCharacter::EndDead(UAnimMontage* InMontage, bool bInterruped)
+void ANXNonPlayerCharacter::EndDead(UAnimMontage* InMontage, bool bInterrupted)
 {
-	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	GetWorld()->GetTimerManager().ClearTimer(DeadTimerHandle);
 
-
-	GetWorld()->GetTimerManager().ClearTimer(DeadTimerHandle);		// Å¸ÀÌ¸Ó ÇØÁ¦
-
-	if (OnDeadMontageEndedDelegate.IsBound() == true)
+	if (OnDeadMontageEndedDelegate.IsBound())
 	{
 		OnDeadMontageEndedDelegate.Unbind();
 	}
+
 	Destroy();
+}
+
+void ANXNonPlayerCharacter::EndDead_Timer()
+{
+	EndDead(nullptr, false);
 }
 
 void ANXNonPlayerCharacter::BeginAttack()
@@ -197,7 +210,7 @@ void ANXNonPlayerCharacter::EndAttack(UAnimMontage* InMontage, bool bInterruped)
 
 	bIsNowAttacking = false;
 
-	GetWorld()->GetTimerManager().ClearTimer(AttackDamageTimerHandle);		// Å¸ÀÌ¸Ó ÇØÁ¦
+	GetWorld()->GetTimerManager().ClearTimer(AttackDamageTimerHandle);		// íƒ€ì´ë¨¸ í•´ì œ
 
 	if (OnAttackMontageEndedDelegate.IsBound() == true)
 	{

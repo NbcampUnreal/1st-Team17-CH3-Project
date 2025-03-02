@@ -55,6 +55,7 @@ protected:
 	virtual void BeginDead();
 
 	virtual void EndDead(UAnimMontage* InMontage, bool bInterruped);
+	virtual void EndDead_Timer();
 
 
 	virtual void BeginAttack();
