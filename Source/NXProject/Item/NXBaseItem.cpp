@@ -54,6 +54,9 @@ void ANXBaseItem::OnItemEndOverlap(
 
 void ANXBaseItem::ActivateItem(AActor* Activator)
 {
+<<<<<<< HEAD
+   
+=======
     GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Overlap!!"));
 
     UNiagaraComponent* NiagaraComponent = nullptr;
@@ -86,6 +89,7 @@ void ANXBaseItem::ActivateItem(AActor* Activator)
             false
         );
     }
+>>>>>>> 0487711 (아이템 이펙트 적용(미완))
 }
 
 FName ANXBaseItem::GetItemType() const
