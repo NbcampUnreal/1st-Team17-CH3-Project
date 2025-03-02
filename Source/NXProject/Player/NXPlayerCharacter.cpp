@@ -20,7 +20,7 @@
 
 ANXPlayerCharacter::ANXPlayerCharacter()
 {
-    PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bCanEverTick = false;
 
     SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArmComp->SetupAttachment(RootComponent);
@@ -40,7 +40,7 @@ ANXPlayerCharacter::ANXPlayerCharacter()
     GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
     
    
-    bIsReloading = false; 
+    
 
     MaxHealth = 100;
     Strength = 15;
@@ -348,7 +348,7 @@ void ANXPlayerCharacter::IsDead()
 
 void ANXPlayerCharacter::FireWeapon()
 {
-    if (CurrentWeapon && !bIsReloading)
+    if (CurrentWeapon)
     {
         
         CurrentWeapon->Fire();
@@ -357,17 +357,45 @@ void ANXPlayerCharacter::FireWeapon()
 
 void ANXPlayerCharacter::ReloadWeapon()
 {
-    if (CurrentWeapon && !bIsReloading)
+    if (CurrentWeapon)
     {
-        //bIsReloading = true;
-        
+       
         CurrentWeapon->Reload();
     }
 }
 
 void ANXPlayerCharacter::OnFirePressed()
 {
-    FireWeapon();
+    //FireWeapon();
+  
+    TArray<FOverlapResult> OverlapResults; // 충돌 감지 후 감지된 액터들을 담아 놓을 배열
+    FCollisionQueryParams CollisionQueryParams(NAME_None, false, this); // 충돌 감지에 필요한 변수 선언
+    bool bResult = GetWorld()->OverlapMultiByChannel(
+        OverlapResults, GetActorLocation() + (GetActorForwardVector() * 100), FQuat::Identity,
+        ECollisionChannel::ECC_GameTraceChannel2,
+        FCollisionShape::MakeSphere(50.f), CollisionQueryParams
+    ); // 충돌 감지 함수 호출
+
+    if (bResult) // 충돌 감지에 성공하면
+    {
+        ACharacter* PlayerCharacter = nullptr; // 첫 번째 감지된 플레이어 캐릭터 저장 변수
+
+        for (auto const& OverlapResult : OverlapResults) // 충돌 감지된 액터들을 순회
+        {
+            PlayerCharacter = Cast<ACharacter>(OverlapResult.GetActor());
+            if (IsValid(PlayerCharacter)) // 플레이어 캐릭터가 유효하면
+            {
+                // 첫 번째 플레이어만 공격 후 반복문 종료
+                PlayerCharacter->TakeDamage(Strength, FDamageEvent(), GetController(), this);
+
+                //UE_LOG(LogTemp, Warning, TEXT("Player Health decreased to: %f"), Health);
+                break;
+            }
+        }
+    }
+
+    DrawDebugSphere(GetWorld(), GetActorLocation() + (GetActorForwardVector()* 100), 50.f, 16, FColor::Green, false, 5.f);
+    //UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
 }
 
 void ANXPlayerCharacter::OnReloadPressed()

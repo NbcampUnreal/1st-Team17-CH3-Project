@@ -121,8 +121,7 @@ protected:
 	// 입력 처리 함수
 	void OnFirePressed();
 	void OnReloadPressed();
-	// 무기 소지 여부
-	bool bIsReloading;
+	
 
 	// 총기 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")

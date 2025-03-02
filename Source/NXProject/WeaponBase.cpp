@@ -1,24 +1,24 @@
 #include "WeaponBase.h"
 #include "Engine/World.h"
+#include "NXProjectile.h"
 #include "GameFramework/Actor.h"
-#include "Kismet/GameplayStatics.h"
-
+#include "TimerManager.h"
 
 AWeaponBase::AWeaponBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
    
-    FireMode = EFireMode::HitScan;
-    DamageAmount = 25.f;
-    FireRate = 0.1f;
-    MaxAmmo = 30;
-    ReloadTime = 2.f;
-    CurrentAmmo = MaxAmmo;
-    bIsReloading = false;
 
     WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
     RootComponent = WeaponMesh;  // WeaponMesh를 루트 컴포넌트로 설정
-    
+    FireRate = 0.2f; //발사 간격
+    MaxAmmo = 30;
+    ReloadTime = 2.0f; //장전 시간
+    bIsReloading = false; 
+    bCanFire = true;
+    CurrentAmmo = MaxAmmo;
+   
+
 
 }
 
@@ -32,58 +32,54 @@ void AWeaponBase::BeginPlay()
 
 void AWeaponBase::Fire()
 {
+    if (bCanFire && ProjectileClass)
 
-    if (bIsReloading || CurrentAmmo <= 0)
     {
-        return;  // 재장전 중이거나 장탄수가 없다면 발사하지 않음
-    }
+        FVector MuzzzleLocation = GetActorLocation();
+        FRotator MuzzleRotation = GetActorRotation();
 
-    if (FireMode == EFireMode::HitScan)
-    {
-        FVector Start = GetActorLocation();  // 발사 지점
-        FVector Forward = GetActorForwardVector();  // 발사 방향
-        FVector End = Start + (Forward * 10000.f);  // 발사 거리 설정 (예: 10000 units)
+        //총알 발사 부분
+        ANXProjectile* Projectile = GetWorld()->SpawnActor<ANXProjectile>(ProjectileClass, MuzzzleLocation, MuzzleRotation);
 
-        FHitResult HitResult;
-        FCollisionQueryParams CollisionParams;
-
-        // 레이캐스트 발사
-        if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, CollisionParams))
+        if (Projectile)
         {
-            // 목표물에 맞았을 때 처리
-            if (AActor* HitActor = HitResult.GetActor())
-            {
-                // 데미지 처리 (예: 데미지 입히기)
-                UGameplayStatics::ApplyPointDamage(HitActor, DamageAmount, Forward, HitResult, nullptr, this, nullptr);
-               
-            }
+            Projectile->FireDirection(MuzzleRotation.Vector());
         }
-    }
-    else if (FireMode == EFireMode::Projectile)
-    {
-        // 물리탄환 방식 처리
+
+        CurrentAmmo--;
     }
 
-    CurrentAmmo--;
+    else if(CurrentAmmo<=0&& !bIsReloading)
+    {
+        Reload();
+    }
+
+  
+
+    
 }
 
 void AWeaponBase::Reload()
 {
-
     if (bIsReloading || CurrentAmmo == MaxAmmo)
     {
-        return;  // 이미 재장전 중이거나 장탄수가 가득 차면 재장전하지 않음
+        return;
     }
 
     bIsReloading = true;
+   
 
-    // 일정 시간 후 재장전 완료 처리 (여기서는 단순히 시간 지연을 사용)
-    FTimerHandle TimerHandle;
-    GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this]()
-        {
-            CurrentAmmo = MaxAmmo;  // 장탄수 복원
-            bIsReloading = false;  // 재장전 완료
-        }, ReloadTime, false);
+    GetWorld()->GetTimerManager().SetTimer(FireTimerHandle, this, &AWeaponBase::FinishReload, ReloadTime, false);
+
+   
+    
+}
+
+void AWeaponBase::FinishReload()
+{
+    CurrentAmmo = MaxAmmo;
+    bIsReloading = false;
+
 }
 
 

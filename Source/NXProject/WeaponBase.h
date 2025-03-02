@@ -4,11 +4,14 @@
 #include "GameFramework/Actor.h"
 #include "WeaponBase.generated.h"
 
+class ANXProjectile;
+
 UENUM(BlueprintType)
 enum class EFireMode : uint8
 {
-    HitScan UMETA(DisplayName = "HitScan"),
-    Projectile UMETA(DisplayName = "Projectile")
+    None  UMETA(DisplayName ="None"),
+    SemiAutoUMETA UMETA(DisplayName = "None"),
+    Automatic UMETA(DisplayName = "Automatic")
 };
 
 UCLASS()
@@ -30,28 +33,40 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Stats")
     EFireMode FireMode;  // 발사 방식 (히트스캔, 물리탄환)
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Stats")
-    float DamageAmount;  // 데미지량
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Stats")
-    float FireRate;  // 발사 속도
+    //발사될 총알 클래스
+    UPROPERTY(EditAnywhere,BlueprintReadWrite, Category= "Weapon")
+    TSubclassOf<class ANXProjectile> ProjectileClass;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Stats")
-    int32 MaxAmmo;  // 장탄수
+    UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
+    float FireRate;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Stats")
-    float ReloadTime;  // 재장전 시간
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    int32 MaxAmmo;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    int32 CurrentAmmo;
 
+
+
+
+    
     // 무기 발사 함수
-    UFUNCTION(BlueprintCallable, Category = "Weapon Functions")
+    UFUNCTION(BlueprintCallable, Category = "Weapon")
     void Fire();
 
     // 재장전 함수
-    UFUNCTION(BlueprintCallable, Category = "Weapon Functions")
+    UFUNCTION(BlueprintCallable, Category = "Weapon")
     void Reload();
 
-    int32 CurrentAmmo;  // 현재 장탄수
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    float ReloadTime;
+
+    bool bIsReloading;  //장전 중인지 여부!
 
 private:
-    bool bIsReloading;  // 재장전 중 여부
+    bool bCanFire;
+    
+    void FinishReload();
+
+    FTimerHandle FireTimerHandle;
 };
