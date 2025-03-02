@@ -54,42 +54,7 @@ void ANXBaseItem::OnItemEndOverlap(
 
 void ANXBaseItem::ActivateItem(AActor* Activator)
 {
-<<<<<<< HEAD
-   
-=======
-    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Overlap!!"));
 
-    UNiagaraComponent* NiagaraComponent = nullptr;
-
-    if (PickupNiagara)
-    {
-        NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-            GetWorld(),
-            PickupNiagara,
-            GetActorLocation(),
-            GetActorRotation(),
-            FVector(1.0f),   
-            false,          
-            true,           
-            ENCPoolMethod::None
-        );
-    }
-
- 
-    if (NiagaraComponent)
-    {
-        FTimerHandle DestroyNiagaraTimerHandle;
-        GetWorld()->GetTimerManager().SetTimer(
-            DestroyNiagaraTimerHandle,
-            [NiagaraComponent]()
-            {
-                NiagaraComponent->DestroyComponent();
-            },
-            2.0f,
-            false
-        );
-    }
->>>>>>> 0487711 (아이템 이펙트 적용(미완))
 }
 
 FName ANXBaseItem::GetItemType() const

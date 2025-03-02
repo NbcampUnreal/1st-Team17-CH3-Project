@@ -67,7 +67,6 @@ void ANXNonPlayerCharacter::BeginPlay()
 
 void ANXNonPlayerCharacter::OnCheckHit()
 {
-<<<<<<< HEAD
 	TArray<FOverlapResult> OverlapResults; // ì¶©ëŒ ê°ì§€ ê²°ê³¼ë¥¼ ì €ì¥í•  ë°°ì—´
 	FCollisionQueryParams CollisionQueryParams(NAME_None, false, this); // ì¶©ëŒ ì¿¼ë¦¬ íŒŒë¼ë¯¸í„° ì„¤ì •
 
@@ -77,41 +76,19 @@ void ANXNonPlayerCharacter::OnCheckHit()
 	CollisionQueryParams.AddIgnoredActors(OtherAIs); // ë‹¤ë¥¸ AIë“¤ì„ ì¶©ëŒ ê°ì§€ì—ì„œ ì œì™¸
 
 	// êµ¬ì²´ í˜•íƒœë¡œ ì¶©ëŒ ê°ì§€ ìˆ˜í–‰ (ECC_GameTraceChannel2ëŠ” í”Œë ˆì´ì–´ ì „ìš© ì±„ë„ë¡œ ê°€ì •)
-=======
-	TArray<FOverlapResult> OverlapResults; // Ãæµ¹ °¨Áö °á°ú¸¦ ÀúÀåÇÒ ¹è¿­
-	FCollisionQueryParams CollisionQueryParams(NAME_None, false, this); // Ãæµ¹ Äõ¸® ÆÄ¶ó¹ÌÅÍ ¼³Á¤
-
-	// ´Ù¸¥ AI¸¦ ¹«½ÃÇÏµµ·Ï ¼³Á¤
-	TArray<AActor*> OtherAIs;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANXNonPlayerCharacter::StaticClass(), OtherAIs); // ¸ğµç AI ¾×ÅÍ °¡Á®¿À±â
-	CollisionQueryParams.AddIgnoredActors(OtherAIs); // ´Ù¸¥ AIµéÀ» Ãæµ¹ °¨Áö¿¡¼­ Á¦¿Ü
-
-	// ±¸Ã¼ ÇüÅÂ·Î Ãæµ¹ °¨Áö ¼öÇà (ECC_GameTraceChannel2´Â ÇÃ·¹ÀÌ¾î Àü¿ë Ã¤³Î·Î °¡Á¤)
->>>>>>> GM_WJH
 	bool bResult = GetWorld()->OverlapMultiByChannel(
 		OverlapResults,
 		GetActorLocation(),
 		FQuat::Identity,
-<<<<<<< HEAD
 		ECollisionChannel::ECC_GameTraceChannel2, // í”Œë ˆì´ì–´ ì „ìš© ì±„ë„ ì‚¬ìš©
-=======
-		ECollisionChannel::ECC_GameTraceChannel2, // ÇÃ·¹ÀÌ¾î Àü¿ë Ã¤³Î »ç¿ë
->>>>>>> GM_WJH
 		FCollisionShape::MakeSphere(300.f),
 		CollisionQueryParams
 	);
 
-<<<<<<< HEAD
 	// ì¶©ëŒ ê°ì§€ì— ì„±ê³µí•œ ê²½ìš°
 	if (bResult)
 	{
 		// ì¢€ë¹„ ì‚¬ìš´ë“œ ì¬ìƒ
-=======
-	// Ãæµ¹ °¨Áö¿¡ ¼º°øÇÑ °æ¿ì
-	if (bResult)
-	{
-		// Á»ºñ »ç¿îµå Àç»ı
->>>>>>> GM_WJH
 		if (ZombieSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(
@@ -121,7 +98,6 @@ void ANXNonPlayerCharacter::OnCheckHit()
 			);
 		}
 
-<<<<<<< HEAD
 		// ì¶©ëŒ ê°ì§€ëœ ëª¨ë“  ì•¡í„° ìˆœíšŒ
 		for (auto const& OverlapResult : OverlapResults)
 		{
@@ -136,32 +112,13 @@ void ANXNonPlayerCharacter::OnCheckHit()
 					// í”Œë ˆì´ì–´ì—ê²Œ ë°ë¯¸ì§€ ì ìš©
 					PlayerCharacter->TakeDamage(Strength, FDamageEvent(), GetController(), this);
 					break; // ì²« ë²ˆì§¸ í”Œë ˆì´ì–´ë§Œ ê³µê²© í›„ ì¢…ë£Œ
-=======
-		// Ãæµ¹ °¨ÁöµÈ ¸ğµç ¾×ÅÍ ¼øÈ¸
-		for (auto const& OverlapResult : OverlapResults)
-		{
-			// Ãæµ¹ÇÑ ¾×ÅÍ°¡ ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍÀÎÁö È®ÀÎ
-			ACharacter* PlayerCharacter = Cast<ACharacter>(OverlapResult.GetActor());
-			if (IsValid(PlayerCharacter))
-			{
-				// ÇÃ·¹ÀÌ¾î ÄÁÆ®·Ñ·¯ÀÎÁö Ãß°¡·Î È®ÀÎ
-				APlayerController* PlayerController = Cast<APlayerController>(PlayerCharacter->GetController());
-				if (IsValid(PlayerController))
-				{
-					// ÇÃ·¹ÀÌ¾î¿¡°Ô µ¥¹ÌÁö Àû¿ë
-					PlayerCharacter->TakeDamage(Strength, FDamageEvent(), GetController(), this);
-					break; // Ã¹ ¹øÂ° ÇÃ·¹ÀÌ¾î¸¸ °ø°İ ÈÄ Á¾·á
->>>>>>> GM_WJH
 				}
 			}
 		}
 	}
 
-<<<<<<< HEAD
 	// ë””ë²„ê·¸ìš© êµ¬ì²´ ë° ë©”ì‹œì§€ ì¶œë ¥
-=======
-	// µğ¹ö±×¿ë ±¸Ã¼ ¹× ¸Ş½ÃÁö Ãâ·Â
->>>>>>> GM_WJH
+
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
 	UKismetSystemLibrary::PrintString(this, TEXT("OnCheckHit()"));
 }
