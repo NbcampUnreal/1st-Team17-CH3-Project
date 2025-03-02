@@ -28,7 +28,7 @@ void UBTService_DetectPlayerCharacter::TickNode(UBehaviorTreeComponent& OwnerCom
 			if (IsValid(World) == true)
 			{
 				FVector CenterPosition = NPC->GetActorLocation();
-				float DetectRadius = 300.f;
+				float DetectRadius = 3500.f;
 				TArray<FOverlapResult> OverlapResults;
 				FCollisionQueryParams CollisionQueryParams(NAME_None, false, NPC);
 				bool bResult = World->OverlapMultiByChannel(

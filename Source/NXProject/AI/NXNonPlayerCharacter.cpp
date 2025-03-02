@@ -58,7 +58,7 @@ void ANXNonPlayerCharacter::BeginPlay()
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		GetCharacterMovement()->bUseControllerDesiredRotation = true;
 		GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
-		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+
 		
 		UpdateAINameplate();
 		UpdateAIHealtBar();
@@ -255,18 +255,21 @@ void ANXNonPlayerCharacter::UpdateAINameplate()
 		Name = (TEXT("aaa"));
 		Defense = 3.f;
 		Strength = 5.f;
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	}
 	else if (MaxHealth <= 300)
 	{
 		Name = (TEXT("bbb"));
 		Defense = 6.f;
 		Strength = 10.f;
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	}
 	else
 	{
 		Name = (TEXT("ccc"));
 		Defense = 9.f;
 		Strength = 15.f;
+		GetCharacterMovement()->MaxWalkSpeed = 1000.f;
 	}
 	if (UTextBlock* NameText = Cast<UTextBlock>(AINameplateWidgetInstance->GetWidgetFromName(TEXT("AINameplate"))))
 	{

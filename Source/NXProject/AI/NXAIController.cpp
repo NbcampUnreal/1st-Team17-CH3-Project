@@ -33,11 +33,17 @@ void ANXAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (BehaviorTree)
+	{
+		RunBehaviorTree(BehaviorTree);
+	}
+
 	APawn* ControlledPawn = GetPawn();
 	if (IsValid(ControlledPawn) == true)
 	{
 		BeginAI(ControlledPawn);
 	}
+
 }
 
 void ANXAIController::EndPlay(const EEndPlayReason::Type EndPlayReason)
