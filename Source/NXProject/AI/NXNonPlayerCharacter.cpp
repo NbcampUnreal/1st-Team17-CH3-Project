@@ -10,7 +10,7 @@
 #include "Components/WidgetComponent.h"
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"		//UProgressBar사용을 위한 추가
-
+//#include "Components/SphereComponent.h"
 
 ANXNonPlayerCharacter::ANXNonPlayerCharacter()
 	: bIsNowAttacking(false)
@@ -25,6 +25,7 @@ ANXNonPlayerCharacter::ANXNonPlayerCharacter()
 	Defense = 0.f;
 	Strength = 0.f;
 	MaxHealth = 0.0f;
+	DetectRadius = 3500.f;
 //-------------------------------//
 
 	AINameplateWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("AINameplateWidget"));
@@ -35,9 +36,12 @@ ANXNonPlayerCharacter::ANXNonPlayerCharacter()
 	AIHealtBar->SetupAttachment(GetMesh());
 	AIHealtBar->SetWidgetSpace(EWidgetSpace::World);
 
+	//SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+	//SphereComponent->InitSphereRadius(DetectRadius); // 기본 반지름 설정
+	//SphereComponent->SetCollisionProfileName(TEXT("Trigger")); // 충돌 프로필 설정
+	//SphereComponent->SetupAttachment(RootComponent); // 루트 컴포넌트에 부착
+
 }
-
-
 
 void ANXNonPlayerCharacter::BeginPlay()
 {
@@ -64,6 +68,27 @@ void ANXNonPlayerCharacter::BeginPlay()
 		UpdateAIHealtBar();
 	}
 }
+
+void ANXNonPlayerCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+#if WITH_EDITOR
+	if (GEngine)
+	{
+		FVector CenterPosition = GetActorLocation();
+		DrawDebugSphere(GetWorld(), CenterPosition, DetectRadius, 16, FColor::Green, false);
+	}
+#endif
+}
+
+//void ANXNonPlayerCharacter::SetSphereRadius(float NewRadius)
+//{
+//	if (SphereComponent)
+//	{
+//		SphereComponent->SetSphereRadius(NewRadius); // 반지름 설정
+//	}
+//}
 
 void ANXNonPlayerCharacter::OnCheckHit()
 {

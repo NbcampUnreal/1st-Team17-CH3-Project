@@ -13,6 +13,7 @@ class NXPROJECT_API UBTService_DetectPlayerCharacter : public UBTService
 public:
 	UBTService_DetectPlayerCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 

@@ -6,6 +6,7 @@
 #include "Player/NXCharacterBase.h"
 #include "Engine/OverlapResult.h"
 
+
 UBTService_DetectPlayerCharacter::UBTService_DetectPlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -28,9 +29,10 @@ void UBTService_DetectPlayerCharacter::TickNode(UBehaviorTreeComponent& OwnerCom
 			if (IsValid(World) == true)
 			{
 				FVector CenterPosition = NPC->GetActorLocation();
-				float DetectRadius = 3500.f;
+				float DetectRadius = NPC->DetectRadius;
 				TArray<FOverlapResult> OverlapResults;
 				FCollisionQueryParams CollisionQueryParams(NAME_None, false, NPC);
+				
 				bool bResult = World->OverlapMultiByChannel(
 					OverlapResults,
 					CenterPosition,
@@ -39,7 +41,7 @@ void UBTService_DetectPlayerCharacter::TickNode(UBehaviorTreeComponent& OwnerCom
 					FCollisionShape::MakeSphere(DetectRadius),
 					CollisionQueryParams
 				);
-
+				
 				if (bResult == true)
 				{
 					for (auto const& OverlapResult : OverlapResults)
@@ -79,6 +81,8 @@ void UBTService_DetectPlayerCharacter::TickNode(UBehaviorTreeComponent& OwnerCom
 				{
 					DrawDebugSphere(World, CenterPosition, DetectRadius, 16, FColor::Green, false, 0.5f);
 				}
+
+				
 			}
 		}
 	}

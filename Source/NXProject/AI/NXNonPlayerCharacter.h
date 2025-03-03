@@ -11,6 +11,7 @@ DECLARE_DELEGATE_TwoParams(FOnDeadMontageEnded, UAnimMontage*, bool /*bInterrupt
 
 class UAnimMontage;		// 공격 Task 구현
 class UWidgetComponent;		// 이름표
+//class USphereComponent;
 
 UCLASS()
 class NXPROJECT_API ANXNonPlayerCharacter : public ANXCharacterBase
@@ -22,6 +23,14 @@ class NXPROJECT_API ANXNonPlayerCharacter : public ANXCharacterBase
 public:
 	ANXNonPlayerCharacter();		// 생성자
 	
+	//// 스피어 컴포넌트
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	//USphereComponent* SphereComponent; // 스피어 컴포넌트
+
+	//// 스피어 컴포넌트의 반지름 설정
+	//void SetSphereRadius(float NewRadius);
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	UWidgetComponent* AINameplateWidget;		//이름표
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
@@ -39,9 +48,15 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 	bool bIsFrozen;
+	////////////////////////////////////
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
+	float DetectRadius;
 
 	virtual void BeginPlay() override;
+
+	void Tick(float DeltaTime);
+
 
 	UFUNCTION()
 	void OnCheckHit();
