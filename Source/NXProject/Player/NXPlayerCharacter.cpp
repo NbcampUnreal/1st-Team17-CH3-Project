@@ -15,6 +15,7 @@
 #include "Components/TextBlock.h"
 #include "Blueprint/UserWidget.h"
 #include "Item/NXSpeedItem.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 
@@ -30,6 +31,11 @@ ANXPlayerCharacter::ANXPlayerCharacter()
     CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
     CameraComp->bUsePawnControlRotation = false;
+
+
+
+
+
 
 
     NormalSpeed = 700.0f;
@@ -373,9 +379,9 @@ void ANXPlayerCharacter::OnFirePressed()
     TArray<FOverlapResult> OverlapResults; // 충돌 감지 후 감지된 액터들을 담아 놓을 배열
     FCollisionQueryParams CollisionQueryParams(NAME_None, false, this); // 충돌 감지에 필요한 변수 선언
     bool bResult = GetWorld()->OverlapMultiByChannel(
-        OverlapResults, GetActorLocation() + (GetActorForwardVector() * 100), FQuat::Identity,
+        OverlapResults, GetActorLocation() + (GetActorForwardVector() * 250), FQuat::Identity,
         ECollisionChannel::ECC_GameTraceChannel2,
-        FCollisionShape::MakeBox(FVector(500.0f, 500.0f, 500.0f)), CollisionQueryParams
+        FCollisionShape::MakeBox(FVector(500.0f,50.0f, 1.0f)), CollisionQueryParams
     ); // 충돌 감지 함수 호출0
 
     if (bResult) // 충돌 감지에 성공하면
@@ -396,7 +402,10 @@ void ANXPlayerCharacter::OnFirePressed()
         }
     }
 
-    //DrawDebugSphere(GetWorld(), GetActorLocation() + (GetActorForwardVector()* 100), 50.f, 16, FColor::Green, false, 5.f);
+    FVector BoxExtent(500.0f, 50.0f,1.0f);
+    //UKismetSystemLibrary::DrawDebugBox(GetWorld(), GetActorLocation()+(GetActorForwardVector()*250), BoxExtent, FColor::Green, GetActorForwardVector().Rotation(), 0.5f, 1.f);
+    //DrawDebugBox(GetWorld(), GetActorLocation() + (GetActorForwardVector() *100.0f), BoxExtent, FColor::Green, false, 0.2f, 0);
+    //DrawDebugSphere(GetWorld(), GetActorLocation() + (GetActorForwardVector()* 100), 50.f, 16, FColor::Green, false, 5.f);  ->0.2
     //UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
 }
 
