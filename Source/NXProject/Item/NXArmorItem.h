@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraSystem.h"
 #include "NXArmorItem.generated.h"
 
 class UStaticMeshComponent;
@@ -16,8 +17,14 @@ class NXPROJECT_API ANXArmorItem : public AActor
 public:
     ANXArmorItem();
 
-protected:
     virtual void BeginPlay() override;
+
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    UNiagaraSystem* PickupNiagara;
+
+protected:
+    
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
     USceneComponent* SceneRoot;

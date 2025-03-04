@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraSystem.h"      
 #include "NXPortal.generated.h"
 
 class UBoxComponent;
@@ -28,6 +29,9 @@ protected:
         const FHitResult& SweepResult
     );
 
+    UFUNCTION()
+    void MoveToNextLevel();
+
 public:
    
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
@@ -39,4 +43,7 @@ public:
     // 이동할 레벨 (우창님이 변경 예정)
     UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Portal")
     FName NextLevelName;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    UNiagaraSystem* PickupNiagara;
 };

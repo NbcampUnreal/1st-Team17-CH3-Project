@@ -14,6 +14,8 @@ class NXPROJECT_API ANXSpeedItem : public ANXBaseItem
 public:
 	ANXSpeedItem();
 
+	virtual void ActivateItem(AActor* Activator)override;
+
 protected:
 
 	
@@ -22,5 +24,5 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	float BoostDuration;
 	
-	virtual void ActivateItem(AActor* Activator)override;
+	
 };

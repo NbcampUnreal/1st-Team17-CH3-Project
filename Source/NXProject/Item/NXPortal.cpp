@@ -1,6 +1,8 @@
 #include "NXPortal.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Engine/Engine.h"
 
 ANXPortal::ANXPortal()
@@ -53,11 +55,60 @@ void ANXPortal::OnOverlap(
         }
         if (!NextLevelName.IsNone())
         {
-            UGameplayStatics::OpenLevel(this, NextLevelName);
+            FTimerHandle TimerHandle;
+            GetWorld()->GetTimerManager().SetTimer(
+                TimerHandle,
+                this,
+                &ANXPortal::MoveToNextLevel,
+                1.0f,
+                false
+            );
+
         }
         else
         {
             UE_LOG(LogTemp, Error, TEXT("NXPortal Error: NextLevelName is not set!"));
         }
+    }
+    UNiagaraComponent* NiagaraComponent = nullptr;
+
+    if (PickupNiagara)
+    {
+        NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+            GetWorld(),
+            PickupNiagara,
+            GetActorLocation(),
+            GetActorRotation(),
+            FVector(1.0f),
+            false,
+            true,
+            ENCPoolMethod::None
+        );
+    }
+
+
+    if (NiagaraComponent)
+    {
+        FTimerHandle DestroyNiagaraTimerHandle;
+        GetWorld()->GetTimerManager().SetTimer(
+            DestroyNiagaraTimerHandle,
+            [NiagaraComponent]()
+            {
+                NiagaraComponent->DestroyComponent();
+            },
+            2.0f,
+            false
+        );
+    }
+}
+void ANXPortal::MoveToNextLevel()
+{
+    if (!NextLevelName.IsNone())
+    {
+        UGameplayStatics::OpenLevel(this, NextLevelName);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("NXPortal Error: NextLevelName is not set!"));
     }
 }

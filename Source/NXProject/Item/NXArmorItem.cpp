@@ -3,6 +3,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SceneComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Engine/Engine.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -60,7 +62,35 @@ void ANXArmorItem::OnOverlap(
             );
         }
 
-        
+        UNiagaraComponent* NiagaraComponent = nullptr;
+        if (PickupNiagara)
+        {
+            NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+                GetWorld(),
+                PickupNiagara,
+                GetActorLocation(),
+                GetActorRotation(),
+                FVector(1.0f),
+                false,
+                true,
+                ENCPoolMethod::None
+            );
+        }
+
+
+        if (NiagaraComponent)
+        {
+            FTimerHandle DestroyNiagaraTimerHandle;
+            GetWorld()->GetTimerManager().SetTimer(
+                DestroyNiagaraTimerHandle,
+                [NiagaraComponent]()
+                {
+                    NiagaraComponent->DestroyComponent();
+                },
+                2.0f,
+                false
+            );
+        }
         Destroy();
     }
 }

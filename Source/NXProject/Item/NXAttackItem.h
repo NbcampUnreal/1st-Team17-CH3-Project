@@ -12,6 +12,8 @@ class NXPROJECT_API ANXAttackItem : public ANXBaseItem
 public:
     ANXAttackItem();
 
+    virtual void ActivateItem(AActor* Activator) override;
+
 protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
@@ -22,5 +24,5 @@ protected:
     float BoostDuration;
 
    
-    virtual void ActivateItem(AActor* Activator) override;
+ 
 };

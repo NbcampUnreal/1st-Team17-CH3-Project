@@ -16,6 +16,8 @@ class NXPROJECT_API ANXMineItem : public ANXBaseItem
 public:
     ANXMineItem();
 
+    virtual void ActivateItem(AActor* Activator) override;
+
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
     USphereComponent* ExplosionCollision;
@@ -30,8 +32,6 @@ protected:
     float ExplosionDamage;
 
     FTimerHandle ExplosionTimerHandle;
-
-    virtual void ActivateItem(AActor* Activator) override;
 
     UFUNCTION()
     void Explode();
