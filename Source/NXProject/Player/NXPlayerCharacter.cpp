@@ -240,7 +240,7 @@ void ANXPlayerCharacter::OnCheckHit()
         }
     }
 
-    DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
+    //DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
     //UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
 }
 
@@ -369,14 +369,14 @@ void ANXPlayerCharacter::ReloadWeapon()
 void ANXPlayerCharacter::OnFirePressed()
 {
     //FireWeapon();
-  
+    //FCollisionShape::MakeBox(FVector(10.0f, 10.0f, 100.0f);
     TArray<FOverlapResult> OverlapResults; // 충돌 감지 후 감지된 액터들을 담아 놓을 배열
     FCollisionQueryParams CollisionQueryParams(NAME_None, false, this); // 충돌 감지에 필요한 변수 선언
     bool bResult = GetWorld()->OverlapMultiByChannel(
         OverlapResults, GetActorLocation() + (GetActorForwardVector() * 100), FQuat::Identity,
         ECollisionChannel::ECC_GameTraceChannel2,
-        FCollisionShape::MakeSphere(50.f), CollisionQueryParams
-    ); // 충돌 감지 함수 호출
+        FCollisionShape::MakeBox(FVector(500.0f, 500.0f, 500.0f)), CollisionQueryParams
+    ); // 충돌 감지 함수 호출0
 
     if (bResult) // 충돌 감지에 성공하면
     {
@@ -396,7 +396,7 @@ void ANXPlayerCharacter::OnFirePressed()
         }
     }
 
-    DrawDebugSphere(GetWorld(), GetActorLocation() + (GetActorForwardVector()* 100), 50.f, 16, FColor::Green, false, 5.f);
+    //DrawDebugSphere(GetWorld(), GetActorLocation() + (GetActorForwardVector()* 100), 50.f, 16, FColor::Green, false, 5.f);
     //UE_LOG(LogTemp, Warning, TEXT("Health decreased to: %f"), Health);
 }
 
