@@ -1,5 +1,3 @@
-
-#pragma once
 #pragma once
 
 #include "CoreMinimal.h"
@@ -35,4 +33,7 @@ protected:
 
     UFUNCTION()
     void Explode();
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    USoundBase* PickupSound;
 };

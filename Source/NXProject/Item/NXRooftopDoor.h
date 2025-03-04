@@ -40,6 +40,9 @@ protected:
         const FHitResult& SweepResult
     );
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    USoundBase* PickupSound;
+
 public:
  
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Door")
@@ -74,4 +77,3 @@ private:
 
     FVector ClosedLocation;
 };
-///

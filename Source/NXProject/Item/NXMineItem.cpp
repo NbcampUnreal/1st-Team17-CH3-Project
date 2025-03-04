@@ -5,6 +5,7 @@
 #include "Player/NXPlayerCharacter.h" 
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/DamageEvents.h"
 #include "Engine/Engine.h"
 
@@ -36,6 +37,14 @@ void ANXMineItem::Explode()
     {
         if (Actor && Actor->ActorHasTag("Player"))
         {
+            if (PickupSound)
+            {
+                UGameplayStatics::PlaySoundAtLocation(
+                    GetWorld(),
+                    PickupSound,
+                    GetActorLocation()
+                );
+            }
             if (GEngine)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Player damaged %f by MineItem"), ExplosionDamage));

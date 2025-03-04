@@ -3,6 +3,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Engine/Engine.h"
 #include "Player/NXPlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
 ANXSmallHealItem::ANXSmallHealItem()
@@ -31,7 +32,14 @@ void ANXSmallHealItem::ActivateItem(AActor* Activator)
             );
         }
     }
-
+    if (PickupSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(
+            GetWorld(),
+            PickupSound,
+            GetActorLocation()
+        );
+    }
 
     UNiagaraComponent* NiagaraComponent = nullptr;
 

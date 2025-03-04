@@ -23,6 +23,7 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
     float BoostDuration;
 
-   
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    USoundBase* PickupSound;
  
 };

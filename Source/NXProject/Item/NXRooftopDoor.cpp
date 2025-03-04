@@ -111,7 +111,15 @@ void ANXRooftopDoor::OnOverlap(
         if (OtherActor->ActorHasTag("HasKey"))
         {
             UE_LOG(LogTemp, Warning, TEXT("Player has the key item. Opening rooftop door."));
-        
+
+            if (PickupSound)
+            {
+                UGameplayStatics::PlaySoundAtLocation(
+                    GetWorld(),
+                    PickupSound,
+                    GetActorLocation()
+                );
+            }
             GetWorld()->GetTimerManager().SetTimer(DoorOpenDelayTimerHandle, this, &ANXRooftopDoor::OpenDoor, 1.0f, false);
         }
         else

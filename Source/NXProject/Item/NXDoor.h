@@ -24,6 +24,8 @@ protected:
     UFUNCTION()
     void HandleDoorMovement(float Value);
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    USoundBase* PickupSound;
 
     UFUNCTION()
     void OnOverlap(
@@ -34,6 +36,8 @@ protected:
         bool bFromSweep,
         const FHitResult& SweepResult
     );
+
+
 
 public:
 

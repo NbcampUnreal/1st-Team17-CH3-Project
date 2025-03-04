@@ -28,10 +28,14 @@ protected:
         const FHitResult& SweepResult
     );
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    USoundBase* PickupSound;
+
     UFUNCTION()
     void MoveToNextLevel();
 
     bool bActivated;
+
 
 public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")

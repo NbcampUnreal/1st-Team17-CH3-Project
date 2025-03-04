@@ -14,4 +14,9 @@ public:
     ANXBigHealItem();
 
     virtual void ActivateItem(AActor* Activator) override;
+
+protected:
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    USoundBase* PickupSound;
 };

@@ -32,6 +32,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
     UNiagaraSystem* PickupNiagara;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    USoundBase* PickupSound;
+
     UFUNCTION()
     void OnOverlap(
         UPrimitiveComponent* OverlappedComponent,

@@ -3,6 +3,7 @@
 #include "Player/NXPlayerCharacter.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 
 ANXSpeedItem::ANXSpeedItem()
@@ -23,6 +24,16 @@ void ANXSpeedItem::ActivateItem(AActor* Activator)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Cyan, TEXT("Speed Boost Activated!"));
 		}
+
+
+        if (PickupSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(
+                GetWorld(),
+                PickupSound,
+                GetActorLocation()
+            );
+        }
 
         UNiagaraComponent* NiagaraComponent = nullptr;
         if (PickupNiagara)

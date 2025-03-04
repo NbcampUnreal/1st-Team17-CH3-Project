@@ -40,7 +40,14 @@ public:
 
     TArray<ANXNonPlayerCharacter*> FrozenNonPlayerCharacter;
 
+protected:
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    USoundBase* PickupSound;
+
 private:
     FTimerHandle FlashlightTimerHandle;
     FTimerHandle NPCFreezeTimerHandle;
+
+
 };

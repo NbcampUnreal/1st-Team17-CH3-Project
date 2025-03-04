@@ -3,6 +3,7 @@
 #include "Player/NXPlayerCharacter.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 
 ANXAttackItem::ANXAttackItem()
@@ -18,7 +19,15 @@ void ANXAttackItem::ActivateItem(AActor* Activator)
 	if (GEngine)
 	{
 		Player->IncreaseAttack(AttackBoostAmount, BoostDuration);
-	
+        
+        if (PickupSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(
+                GetWorld(),
+                PickupSound,
+                GetActorLocation()
+            );
+        }
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Attack Boost Activated!"));

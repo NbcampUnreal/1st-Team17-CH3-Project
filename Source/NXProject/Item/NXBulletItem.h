@@ -18,4 +18,8 @@ protected:
 	int32 BulletAmount;
 
 	virtual void ActivateItem(AActor* Activator)override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+	USoundBase* PickupSound;
+
 };

@@ -82,6 +82,7 @@ void ANXDoor::OpenDoor()
     {
         UE_LOG(LogTemp, Warning, TEXT("Door is already open."));
     }
+
 }
 
 void ANXDoor::OnOverlap(
@@ -104,5 +105,14 @@ void ANXDoor::OnOverlap(
         UE_LOG(LogTemp, Warning, TEXT("Player detected in door trigger. Opening door in 1 seconds."));
 
         GetWorld()->GetTimerManager().SetTimer(DoorOpenDelayTimerHandle, this, &ANXDoor::OpenDoor, 1.0f, false);
+    }
+
+    if (PickupSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(
+            GetWorld(),
+            PickupSound,
+            GetActorLocation()
+        );
     }
 }

@@ -5,6 +5,7 @@
 #include "Components/SceneComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -51,7 +52,14 @@ void ANXArmorItem::OnOverlap(
         
         Character->IncreaseArmor(ArmorValue, ArmorDuration);
       
-
+        if (PickupSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(
+                GetWorld(),
+                PickupSound,
+                GetActorLocation()
+            );
+        }
         if (GEngine)
         {
             GEngine->AddOnScreenDebugMessage(

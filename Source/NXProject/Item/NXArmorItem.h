@@ -41,6 +41,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Armor")
     float ArmorDuration;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    USoundBase* PickupSound;
+
     UFUNCTION()
     void OnOverlap(
         UPrimitiveComponent* OverlappedComponent,

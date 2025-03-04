@@ -4,6 +4,7 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Engine/Engine.h"
+#include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "Player/NXPlayerCharacter.h"
 
@@ -55,7 +56,14 @@ void ANXKeyItem::OnOverlap(
                 TEXT("Key Acquired!!")
             );
         }
-
+        if (PickupSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(
+                GetWorld(),
+                PickupSound,
+                GetActorLocation()
+            );
+        }
         UNiagaraComponent* NiagaraComponent = nullptr;
         if (PickupNiagara)
         {

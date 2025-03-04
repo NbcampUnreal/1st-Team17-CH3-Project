@@ -39,6 +39,15 @@ void ANXFlashItem::ActivateItem(AActor* Activator)
     bIsActive = true;  
     Flashlight->SetVisibility(true);
 
+    if (PickupSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(
+            GetWorld(),
+            PickupSound,
+            GetActorLocation()
+        );
+    }
+
     if (GEngine)
     {
         GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT("Flashlight activated!"));

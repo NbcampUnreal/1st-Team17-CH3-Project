@@ -1,6 +1,7 @@
 
 #include "Item/NXBulletItem.h"
 #include "Player/NXPlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 
 ANXBulletItem::ANXBulletItem()
@@ -14,12 +15,18 @@ void ANXBulletItem::ActivateItem(AActor* Activator)
 	ANXPlayerCharacter* Player = Cast<ANXPlayerCharacter>(Activator);
 	if (Player)
 	{
-		//Player->ReifillBullet(BulletAmount);
-		//Character.cpp 수정 후 주석 해제
-
+	
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, TEXT("Bullet Refilled!"));
+		}
+		if (PickupSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(
+				GetWorld(),
+				PickupSound,
+				GetActorLocation()
+			);
 		}
 	}
 	DestroyItem();

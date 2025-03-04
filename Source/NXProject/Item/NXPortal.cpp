@@ -54,6 +54,15 @@ void ANXPortal::OnOverlap(
     {
         bActivated = true; 
 
+        if (PickupSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(
+                GetWorld(),
+                PickupSound,
+                GetActorLocation()
+            );
+        }
+
         UE_LOG(LogTemp, Warning, TEXT("NXPortal: Player detected. Will move to level: %s in 1 second."), *NextLevelName.ToString());
 
         if (GEngine)
@@ -80,7 +89,9 @@ void ANXPortal::OnOverlap(
         {
             UE_LOG(LogTemp, Error, TEXT("NXPortal Error: NextLevelName is not set!"));
         }
+
     }
+
 
 
     UNiagaraComponent* NiagaraComponent = nullptr;
@@ -116,6 +127,7 @@ void ANXPortal::OnOverlap(
             false
         );
     }
+
 }
 
 void ANXPortal::MoveToNextLevel()
