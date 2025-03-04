@@ -98,8 +98,9 @@ protected:
 	int32 CurrentLevelIndex;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
 	int32 MaxLevels;
+	UFUNCTION(BlueprintCallable, Category = "Game")
 	void OnGameOver();
-	
+
 
 	//************캐릭터무브먼트************
 
@@ -136,6 +137,7 @@ protected:
 	// 앉기 액션을 토글하는 함수
 	void BeginCrouch(const FInputActionValue& value);
 	void EndCrouch(const FInputActionValue& value);
+
 	
 
 	
@@ -164,6 +166,8 @@ protected:
 	UFUNCTION()
 	void InputReload(const FInputActionValue& Invalue);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void BlueprintOnDeath();
 
 	
 };

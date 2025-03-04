@@ -347,8 +347,9 @@ float ANXPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 
 void ANXPlayerCharacter::IsDead()
 {
-   
-    Destroy();
+    BlueprintOnDeath();
+    SetLifeSpan(10.f);
+    //Destroy();
     UE_LOG(LogTemp, Warning, TEXT("IsDead")); 
 }
 
