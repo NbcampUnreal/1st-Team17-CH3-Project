@@ -2,11 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "NiagaraSystem.h"      
+#include "NiagaraSystem.h"
 #include "NXPortal.generated.h"
 
 class UBoxComponent;
-class UStaticMeshComponent;
 
 UCLASS()
 class NXPROJECT_API ANXPortal : public AActor
@@ -32,18 +31,15 @@ protected:
     UFUNCTION()
     void MoveToNextLevel();
 
+    bool bActivated;
+
 public:
-   
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
     UBoxComponent* PortalTrigger;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
-    UStaticMeshComponent* PortalMesh;
-
-    // 이동할 레벨 (우창님이 변경 예정)
-    UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Portal")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Portal")
     FName NextLevelName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item|Effects")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
     UNiagaraSystem* PickupNiagara;
 };

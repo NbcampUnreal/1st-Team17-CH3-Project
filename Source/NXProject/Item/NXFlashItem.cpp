@@ -8,13 +8,13 @@
 
 ANXFlashItem::ANXFlashItem()
 {
-    LightDuration = 5.0f;
-    NonPlayerCharacterFreezeDuration = 3.0f;
+    LightDuration = 6.0f;
+    NonPlayerCharacterFreezeDuration = 6.0f;
     bIsActive = false; 
 
     CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComponent"));
     RootComponent = CollisionComponent;
-    CollisionComponent->SetSphereRadius(500.0f);
+    CollisionComponent->SetSphereRadius(600.0f);
     CollisionComponent->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 
     Flashlight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Flashlight"));
