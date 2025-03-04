@@ -8,7 +8,7 @@
 
 ANXAttackItem::ANXAttackItem()
 {
-	AttackBoostAmount = 15.f;
+	AttackBoostAmount = 100.f;
 	BoostDuration = 10.f;
 	ItemType = "Attack";
 }

@@ -8,7 +8,7 @@
 
 ANXSpeedItem::ANXSpeedItem()
 {
-	SpeedBoostAmount = 150.f;
+	SpeedBoostAmount = 1500.f;
 	BoostDuration = 10.f;
 	ItemType = "Speed";
 }
