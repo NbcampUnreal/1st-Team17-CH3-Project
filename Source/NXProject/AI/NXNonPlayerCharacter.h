@@ -50,7 +50,7 @@ public:
 	bool bIsFrozen;
 	////////////////////////////////////
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stats")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 	float DetectRadius;
 
 	virtual void BeginPlay() override;

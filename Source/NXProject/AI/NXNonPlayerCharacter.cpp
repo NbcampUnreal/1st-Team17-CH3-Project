@@ -275,23 +275,23 @@ void ANXNonPlayerCharacter::UpdateAINameplate()
 	//FString Name = GetName();
 	FString Name;
 
-	if(MaxHealth > 500)
+	if(MaxHealth <= 10)
 	{
-		Name = (TEXT("aaa"));
+		Name = (TEXT("Basic"));
 		Defense = 3.f;
 		Strength = 5.f;
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	}
-	else if (MaxHealth <= 300)
+	else if (MaxHealth <= 20)
 	{
-		Name = (TEXT("bbb"));
+		Name = (TEXT("Police"));
 		Defense = 6.f;
 		Strength = 10.f;
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	}
 	else
 	{
-		Name = (TEXT("ccc"));
+		Name = (TEXT("Challenge"));
 		Defense = 9.f;
 		Strength = 15.f;
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
