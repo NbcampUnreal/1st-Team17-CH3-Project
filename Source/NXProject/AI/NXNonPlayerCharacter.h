@@ -55,7 +55,7 @@ public:
 
 	virtual void BeginPlay() override;
 
-	void Tick(float DeltaTime);
+	//void Tick(float DeltaTime);
 
 
 	UFUNCTION()

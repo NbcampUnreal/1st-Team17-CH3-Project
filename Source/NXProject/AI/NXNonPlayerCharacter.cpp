@@ -15,7 +15,7 @@
 ANXNonPlayerCharacter::ANXNonPlayerCharacter()
 	: bIsNowAttacking(false)
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	AIControllerClass = ANXAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -69,18 +69,18 @@ void ANXNonPlayerCharacter::BeginPlay()
 	}
 }
 
-void ANXNonPlayerCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-#if WITH_EDITOR
-	if (GEngine)
-	{
-		FVector CenterPosition = GetActorLocation();
-		DrawDebugSphere(GetWorld(), CenterPosition, DetectRadius, 16, FColor::Green, false);
-	}
-#endif
-}
+//void ANXNonPlayerCharacter::Tick(float DeltaTime)
+//{
+//	Super::Tick(DeltaTime);
+//
+//#if WITH_EDITOR
+//	if (GEngine)
+//	{
+//		FVector CenterPosition = GetActorLocation();
+//		DrawDebugSphere(GetWorld(), CenterPosition, DetectRadius, 16, FColor::Green, false);
+//	}
+//#endif
+//}
 
 //void ANXNonPlayerCharacter::SetSphereRadius(float NewRadius)
 //{
@@ -144,8 +144,8 @@ void ANXNonPlayerCharacter::OnCheckHit()
 
 	// 디버그용 구체 및 메시지 출력
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
-	UKismetSystemLibrary::PrintString(this, TEXT("OnCheckHit()"));
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), 300.f, 16, FColor::Green, false, 5.f);
+	//UKismetSystemLibrary::PrintString(this, TEXT("OnCheckHit()"));
 }
 
 void ANXNonPlayerCharacter::IsDead()
@@ -254,7 +254,7 @@ float ANXNonPlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& 
 		DamageCalculation = 0;
 	}
 	Health = FMath::Clamp(Health - DamageCalculation, 0.0f, MaxHealth);
-	UE_LOG(LogTemp, Warning, TEXT("Health wdecreased to: %f"), Health);
+	//UE_LOG(LogTemp, Warning, TEXT("Health wdecreased to: %f"), Health);
 
 	if (Health <= 0.0f)
 	{
