@@ -285,14 +285,14 @@ void ANXNonPlayerCharacter::UpdateAINameplate()
 	else if (MaxHealth <= 20)
 	{
 		Name = (TEXT("Police"));
-		Defense = 6.f;
+		Defense = 4.f;
 		Strength = 10.f;
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	}
 	else
 	{
 		Name = (TEXT("Challenge"));
-		Defense = 9.f;
+		Defense = 5.f;
 		Strength = 15.f;
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	}
